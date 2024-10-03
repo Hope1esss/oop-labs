@@ -1,56 +1,202 @@
-#include <../include/checkBracketSequence.h>
+#include "../include/Eleven.h"
 #include <gtest/gtest.h>
-#include <string>
 
-TEST(checkBracketSequenceTest, CheckCorrectSequenceLen2) {
-   std::string input_string = "()";
+TEST(ElevenTest, DefaultConstructorTest)
+{
+    Eleven number;
 
-   bool result = checkBracketSequence(input_string);
+    size_t expectedSize = 0;
+    unsigned char *expectedData = nullptr;
 
-   EXPECT_TRUE(result);
+    size_t realSize = number.getSize();
+    unsigned char *realData = number.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData == realData);
 }
 
-TEST(checkBracketSequenceTest, CheckWrongSequenceLen6) {
-   std::string input_string = ")(()))";
+TEST(ElevenTest, LengthAndValueConstructorTest)
+{
+    size_t length = 4;
+    unsigned char value = '5';
 
-   bool result = checkBracketSequence(input_string);
+    size_t expectedSize = 4;
+    unsigned char expectedData[] = {'5', '5', '5', '5'};
 
-   EXPECT_FALSE(result);
+    Eleven number(length, value);
+    size_t realSize = number.getSize();
+    unsigned char *realData = number.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
+    ASSERT_TRUE(expectedData[3] == realData[3]);
 }
 
-TEST(checkBracketSequenceTest, CheckWrongSequenceLen1) {
-   std::string input_string = "(";
+TEST(ElevenTest, ListConstructorTest)
+{
+    std::initializer_list<unsigned char> list = {'1', '2', '3'};
 
-   bool result = checkBracketSequence(input_string);
+    size_t expectedSize = 3;
+    unsigned char expectedData[] = {'1', '2', '3'};
 
-   EXPECT_FALSE(result);
+    Eleven number(list);
+
+    size_t realSize = number.getSize();
+    unsigned char *realData = number.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
 }
 
-TEST(checkBracketSequenceTest, CheckCorrectSequenceLen14) {
-   std::string input_string = "(())((()())())";
+TEST(ElevenTest, StringConstructorTest)
+{
+    std::string str = "123A2";
+    size_t expectedSize = 5;
+    unsigned char expectedData[] = {'1', '2', '3', 'A', '2'};
 
-   bool result = checkBracketSequence(input_string);
+    Eleven number(str);
+    size_t realSize = number.getSize();
+    unsigned char *realData = number.getData();
 
-   EXPECT_TRUE(result);
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
+    ASSERT_TRUE(expectedData[3] == realData[3]);
+    ASSERT_TRUE(expectedData[4] == realData[4]);
 }
 
-TEST(checkBracketSequenceTest, CheckLongSequenceLen150) {
-   std::string input_string(150, '(');
+TEST(ElevenTest, CopyConstructorTest)
+{
 
-   ASSERT_THROW(checkBracketSequence(input_string),
-                InvalidStringLengthException);
+    std::string str = "123";
+    size_t expectedSize = 3;
+    unsigned char expectedData[] = {'1', '2', '3'};
+
+    Eleven number1(str);
+    Eleven number2(number1);
+    size_t realSize = number2.getSize();
+    unsigned char *realData = number2.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
 }
 
-TEST(checkBracketSequenceTest, CheckEmptySequence) {
-   std::string input_string = "";
+TEST(ElevenTest, MoveConstructorTest)
+{
 
-   bool result = checkBracketSequence(input_string);
+    std::string str = "123";
+    size_t expectedSize = 3;
+    unsigned char expectedData[] = {'1', '2', '3'};
 
-   EXPECT_TRUE(result);
+    Eleven number1(str);
+    Eleven number2(std::move(number1));
+    size_t realSize = number2.getSize();
+    unsigned char *realData = number2.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
 }
 
-TEST(checkBracketSequenceTest, CheckSequenceWithNumber) {
-   std::string input_string = "7";
+TEST(ElevenTest, AssignmentTest)
+{
+    std::string str = "123";
+    size_t expectedSize = 3;
+    unsigned char expectedData[] = {'1', '2', '3'};
 
-   ASSERT_THROW(checkBracketSequence(input_string), InvalidCharException);
+    Eleven number1(str);
+    Eleven number2;
+    number2 = number1;
+    size_t realSize = number2.getSize();
+    unsigned char *realData = number2.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
+}
+
+TEST(ElevenTest, AddUpTest)
+{
+
+    std::string str = "123";
+    std::string str2 = "A42";
+    size_t expectedSize = 4;
+    unsigned char expectedData[] = {'1', '0', '6', '5'};
+    
+    Eleven number1(str);
+    Eleven number2(str2);
+    number2 += number1;
+    size_t realSize = number2.getSize();
+    unsigned char *realData = number2.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
+    ASSERT_TRUE(expectedData[3] == realData[3]);
+}
+
+TEST(ElevenTest, SubstractTest)
+{
+    std::string str = "123";
+    std::string str2 = "A42";
+    size_t expectedSize = 3;
+    unsigned char expectedData[] = {'9', '1', 'A'};
+
+    Eleven number1(str);
+    Eleven number2(str2);
+    number2 -= number1;
+    size_t realSize = number2.getSize();
+    unsigned char *realData = number2.getData();
+
+    ASSERT_TRUE(expectedSize == realSize);
+    ASSERT_TRUE(expectedData[0] == realData[0]);
+    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_TRUE(expectedData[2] == realData[2]);
+}
+
+TEST(ElevenTest, CompareLessTest){
+
+    std::string str = "123";
+    std::string str2 = "A42";
+    Eleven number1(str);
+    Eleven number2(str2);
+
+    bool result = number1 < number2;
+
+    ASSERT_TRUE(result);
+}
+
+TEST(ElevenTest, CompareGreatTest) {
+
+    std::string str = "123";
+    std::string str2 = "A42";
+    Eleven number1(str);
+    Eleven number2(str2);
+
+    bool result = number2 > number1;
+
+    ASSERT_TRUE(result);
+}
+
+TEST(ElevenTest, CompareEqualTest) {
+
+    std::string str = "123";
+    std::string str2 = "123";
+
+    Eleven number1(str);
+    Eleven number2(str2);
+    
+    bool result = number1 == number2;
+
+    ASSERT_TRUE(result);
 }

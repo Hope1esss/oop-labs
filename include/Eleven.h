@@ -7,9 +7,9 @@ void validateDigit(unsigned char digit);
 class Eleven {
   public:
    Eleven();
-   Eleven(const size_t &n, unsigned char t = 0);
-   Eleven(const std::initializer_list<unsigned char> &t);
-   Eleven(const std::string &t);
+   Eleven(const size_t &length, unsigned char value = 0);
+   Eleven(const std::initializer_list<unsigned char> &valuesList);
+   Eleven(const std::string &value);
    Eleven(const Eleven &other);
    Eleven(Eleven &&other) noexcept;
    virtual ~Eleven() noexcept;
@@ -33,5 +33,11 @@ class Eleven {
 class InvalidDigit : public std::invalid_argument {
   public:
    InvalidDigit()
-       : std::invalid_argument("Invalid digit: It must be between 0 and 10") {}
+       : std::invalid_argument("Invalid digit: It must be between 0 and 10(A)") {}
+};
+
+class NegativeSubtraction : public std::invalid_argument {
+  public:
+   NegativeSubtraction()
+       : std::invalid_argument("Negative substraction: Result is negative") {}
 };
