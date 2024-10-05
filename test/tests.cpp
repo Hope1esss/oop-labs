@@ -129,9 +129,9 @@ TEST(ElevenTest, AddUpTest)
 
     std::string str = "123";
     std::string str2 = "A42";
-    size_t expectedSize = 4;
-    unsigned char expectedData[] = {'1', '0', '6', '5'};
-    
+    size_t expectedSize = 3;
+    unsigned char expectedData[] = {'0', '7', '5'};
+
     Eleven number1(str);
     Eleven number2(str2);
     number2 += number1;
@@ -149,53 +149,55 @@ TEST(ElevenTest, SubstractTest)
 {
     std::string str = "123";
     std::string str2 = "A42";
-    size_t expectedSize = 3;
-    unsigned char expectedData[] = {'9', '1', 'A'};
+    size_t expectedSize = 2;
+    unsigned char expectedData[] = {'2', '8'};
 
-    Eleven number1(str);
+    Eleven subResult(str);
     Eleven number2(str2);
-    number2 -= number1;
-    size_t realSize = number2.getSize();
-    unsigned char *realData = number2.getData();
+    subResult -= number2;
+    size_t realSize = subResult.getSize();
+    unsigned char *realData = subResult.getData();
 
     ASSERT_TRUE(expectedSize == realSize);
     ASSERT_TRUE(expectedData[0] == realData[0]);
     ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
 }
 
-TEST(ElevenTest, CompareLessTest){
+TEST(ElevenTest, CompareLessTest)
+{
 
     std::string str = "123";
     std::string str2 = "A42";
     Eleven number1(str);
     Eleven number2(str2);
 
-    bool result = number1 < number2;
+    bool result = number2 < number1;
 
     ASSERT_TRUE(result);
 }
 
-TEST(ElevenTest, CompareGreatTest) {
+TEST(ElevenTest, CompareGreatTest)
+{
 
     std::string str = "123";
     std::string str2 = "A42";
     Eleven number1(str);
     Eleven number2(str2);
 
-    bool result = number2 > number1;
+    bool result = number1 > number2;
 
     ASSERT_TRUE(result);
 }
 
-TEST(ElevenTest, CompareEqualTest) {
+TEST(ElevenTest, CompareEqualTest)
+{
 
     std::string str = "123";
     std::string str2 = "123";
 
     Eleven number1(str);
     Eleven number2(str2);
-    
+
     bool result = number1 == number2;
 
     ASSERT_TRUE(result);
