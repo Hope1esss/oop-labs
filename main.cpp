@@ -132,6 +132,8 @@ int main()
             case 6:
             {
                 std::cout << "Bye!" << std::endl;
+                delete &num1;
+                delete &num2;
                 break;
             }
 
