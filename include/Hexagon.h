@@ -13,11 +13,23 @@ public:
     void getPointsData() const override;
     Point getGeometricalCenter() const override;
     operator double() const override;
+    bool isValidHexagon() const;
 
+    friend std::istream &operator>>(std::istream &is, Hexagon &Hexagon);    
     friend std::ostream &operator<<(std::ostream &os, const Hexagon &Hexagon);
-    friend std::istream &operator>>(std::istream &is, Hexagon &Hexagon);
 
 private:
     Point points[6];
-    bool isHexagon() const;
+};
+
+class HexagonPointsException : public std::invalid_argument
+{
+public:
+HexagonPointsException() : std::invalid_argument("Invalid numbers of points for hexagon. It should be 6 points") {}
+};
+
+class HexagonValidException : public std::invalid_argument
+{
+public:
+HexagonValidException() : std::invalid_argument("Points can't form valid hexagon") {}
 };

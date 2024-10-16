@@ -1,204 +1,115 @@
-#include "../include/Eleven.h"
+#include "../include/Hexagon.h"
+#include "../include/Octagon.h"
+#include "../include/Triangle.h"
 #include <gtest/gtest.h>
+#include <cmath>
 
-TEST(ElevenTest, DefaultConstructorTest)
+TEST(TriangleTest, ValidTriangleConstruction)
 {
-    Eleven number;
+    Point points[3] = {{1, 0}, {2, 1}, {2, 0}};
 
-    size_t expectedSize = 0;
-    unsigned char *expectedData = nullptr;
-
-    size_t realSize = number.getSize();
-    unsigned char *realData = number.getData();
-
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData == realData);
+    ASSERT_NO_THROW(Triangle triangle(points));
 }
 
-TEST(ElevenTest, LengthAndValueConstructorTest)
+TEST(TriangleTest, InvalidTriangleConstruction)
 {
-    size_t length = 4;
-    unsigned char value = '5';
+    Point points[3] = {{0, 0}, {0, 0}, {0, 0}};
 
-    size_t expectedSize = 4;
-    unsigned char expectedData[] = {'5', '5', '5', '5'};
-
-    Eleven number(length, value);
-    size_t realSize = number.getSize();
-    unsigned char *realData = number.getData();
-
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
-    ASSERT_TRUE(expectedData[3] == realData[3]);
+    ASSERT_ANY_THROW(Triangle triangle(points));
 }
 
-TEST(ElevenTest, ListConstructorTest)
+TEST(TriangleTest, GeometricalCenterTrue)
 {
-    std::initializer_list<unsigned char> list = {'1', '2', '3'};
+    Point points[3] = {{1, 0}, {2, 1}, {2, 0}};
+    Triangle triangle(points);
+    Point expectedPoint = {1.66667, 0.333333};
 
-    size_t expectedSize = 3;
-    unsigned char expectedData[] = {'1', '2', '3'};
+    Point realPoint = triangle.getGeometricalCenter();
 
-    Eleven number(list);
-
-    size_t realSize = number.getSize();
-    unsigned char *realData = number.getData();
-
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
+    ASSERT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
-TEST(ElevenTest, StringConstructorTest)
+TEST(TriangleTest, GeometricalCenterFalse)
 {
-    std::string str = "123A2";
-    size_t expectedSize = 5;
-    unsigned char expectedData[] = {'1', '2', '3', 'A', '2'};
+    Point points[3] = {{1, 0}, {2, 1}, {2, 0}};
+    Triangle triangle(points);
+    Point expectedPoint = {0, 0};
 
-    Eleven number(str);
-    size_t realSize = number.getSize();
-    unsigned char *realData = number.getData();
+    Point realPoint = triangle.getGeometricalCenter();
 
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
-    ASSERT_TRUE(expectedData[3] == realData[3]);
-    ASSERT_TRUE(expectedData[4] == realData[4]);
+    ASSERT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
-TEST(ElevenTest, CopyConstructorTest)
+TEST(HexagonTest, ValidHexagonConstruction)
 {
+    Point points[6] = {{5, 0}, {2.5, 4.33}, {-2.5, 4.33}, {-5, 0}, {-2.5, -4.33}, {2.5, -4.33}};
 
-    std::string str = "123";
-    size_t expectedSize = 3;
-    unsigned char expectedData[] = {'1', '2', '3'};
-
-    Eleven number1(str);
-    Eleven number2(number1);
-    size_t realSize = number2.getSize();
-    unsigned char *realData = number2.getData();
-
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
+    ASSERT_NO_THROW(Hexagon hexagon(points));
 }
 
-TEST(ElevenTest, MoveConstructorTest)
+TEST(HexagonText, InvalidHexagonConstruction)
 {
+    Point points[6] = {{1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
 
-    std::string str = "123";
-    size_t expectedSize = 3;
-    unsigned char expectedData[] = {'1', '2', '3'};
-
-    Eleven number1(str);
-    Eleven number2(std::move(number1));
-    size_t realSize = number2.getSize();
-    unsigned char *realData = number2.getData();
-
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
+    ASSERT_ANY_THROW(Hexagon hexagon(points));
 }
 
-TEST(ElevenTest, AssignmentTest)
+TEST(HexagonTest, GeometricalCenterTrue)
 {
-    std::string str = "123";
-    size_t expectedSize = 3;
-    unsigned char expectedData[] = {'1', '2', '3'};
+    Point points[6] = {{5, 0}, {2.5, 4.33}, {-2.5, 4.33}, {-5, 0}, {-2.5, -4.33}, {2.5, -4.33}};
+    Hexagon hexagon(points);
+    Point expectedPoint = {0.833333, 1.44333};
 
-    Eleven number1(str);
-    Eleven number2;
-    number2 = number1;
-    size_t realSize = number2.getSize();
-    unsigned char *realData = number2.getData();
+    Point realPoint = hexagon.getGeometricalCenter();
 
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
+    ASSERT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
-TEST(ElevenTest, AddUpTest)
+TEST(HexagonTest, GeometricalCenterFalse)
 {
+    Point points[6] = {{5, 0}, {2.5, 4.33}, {-2.5, 4.33}, {-5, 0}, {-2.5, -4.33}, {2.5, -4.33}};
+    Hexagon hexagon(points);
+    Point expectedPoint = {0, 0};
 
-    std::string str = "123";
-    std::string str2 = "A42";
-    size_t expectedSize = 3;
-    unsigned char expectedData[] = {'0', '7', '5'};
+    Point realPoint = hexagon.getGeometricalCenter();
 
-    Eleven number1(str);
-    Eleven number2(str2);
-    number2 += number1;
-    size_t realSize = number2.getSize();
-    unsigned char *realData = number2.getData();
-
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
-    ASSERT_TRUE(expectedData[2] == realData[2]);
-    ASSERT_TRUE(expectedData[3] == realData[3]);
+    ASSERT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
-TEST(ElevenTest, SubstractTest)
+TEST(OctagonText, ValidOctagonConstruction)
 {
-    std::string str = "123";
-    std::string str2 = "A42";
-    size_t expectedSize = 2;
-    unsigned char expectedData[] = {'2', '8'};
+    Point points[8] = {{5, 0}, {3.53553, 3.53553}, {0, 5}, {-3.53553, 3.53553}, {-5, 0}, {-3.53553, -3.53553}, {0, -5}, {3.53553, -3.53553}}
+;
 
-    Eleven subResult(str);
-    Eleven number2(str2);
-    subResult -= number2;
-    size_t realSize = subResult.getSize();
-    unsigned char *realData = subResult.getData();
-
-    ASSERT_TRUE(expectedSize == realSize);
-    ASSERT_TRUE(expectedData[0] == realData[0]);
-    ASSERT_TRUE(expectedData[1] == realData[1]);
+    ASSERT_NO_THROW(Octagon octagon(points));
 }
 
-TEST(ElevenTest, CompareLessTest)
+TEST(OctagonText, InvalidOctagonConstruction)
 {
+    Point points[8] = {{1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
 
-    std::string str = "123";
-    std::string str2 = "A42";
-    Eleven number1(str);
-    Eleven number2(str2);
-
-    bool result = number2 < number1;
-
-    ASSERT_TRUE(result);
+    ASSERT_ANY_THROW(Octagon octagon(points));
 }
 
-TEST(ElevenTest, CompareGreatTest)
+TEST(OctagonTest, GeometricalCenterTrue)
 {
+    Point points[8] = {{5, 0}, {3.53553, 3.53553}, {0, 5}, {-3.53553, 3.53553}, {-5, 0}, {-3.53553, -3.53553}, {0, -5}, {3.53553, -3.53553}};
+    Octagon octagon(points);
+    Point expectedPoint = {1.06694, 1.06694};
 
-    std::string str = "123";
-    std::string str2 = "A42";
-    Eleven number1(str);
-    Eleven number2(str2);
+    Point realPoint = octagon.getGeometricalCenter();
 
-    bool result = number1 > number2;
+    ASSERT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 
-    ASSERT_TRUE(result);
 }
 
-TEST(ElevenTest, CompareEqualTest)
+TEST(OctagonTest, GeometricalCenterFalse)
 {
+    Point points[8] = {{5, 0}, {3.53553, 3.53553}, {0, 5}, {-3.53553, 3.53553}, {-5, 0}, {-3.53553, -3.53553}, {0, -5}, {3.53553, -3.53553}};
+    Octagon octagon(points);
+    Point expectedPoint = {0, 0};
 
-    std::string str = "123";
-    std::string str2 = "123";
+    Point realPoint = octagon.getGeometricalCenter();
 
-    Eleven number1(str);
-    Eleven number2(str2);
-
-    bool result = number1 == number2;
-
-    ASSERT_TRUE(result);
+    ASSERT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }

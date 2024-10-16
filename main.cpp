@@ -1,24 +1,75 @@
 #include <iostream>
-#include "./include/Eleven.h"
-
+#include "include/Hexagon.h"
+#include "include/Octagon.h"
+#include "include/Triangle.h"
 void showMenu()
 {
     std::cout << "Choose one of the following:" << std::endl;
-    std::cout << "1. Enter two 11-based numbers" << std::endl;
-    std::cout << "2. Add up the numbers" << std::endl;
-    std::cout << "3. Subtract the second number from the first" << std::endl;
-    std::cout << "4. Compare numbers" << std::endl;
-    std::cout << "5. Print numbers" << std::endl;
-    std::cout << "6. Exit" << std::endl;
+    std::cout << "1. Add Figure" << std::endl;
+    std::cout << "2. Delete Figure" << std::endl;
+    std::cout << "3. Calculate total area" << std::endl;
+    std::cout << "4. Calculate geometrical center of fugure" << std::endl;
+    std::cout << "5. Exit" << std::endl;
+}
+
+Figure *addFigure()
+{
+    int choise = 0;
+    std::cout << "Choose type of the figure: " << std::endl;
+    std::cout << "1. Triangle" << std::endl;
+    std::cout << "2. Hexagon" << std::endl;
+    std::cout << "3. Octagon" << std::endl;
+    std::cin >> choise;
+
+    switch (choise)
+    {
+    case 1:
+    {
+        Point points[3];
+        std::cout << "Enter 3 points of the triangle in order. Example: 'x y': " << std::endl;
+        for (int i = 0; i < 3; i++)
+        {
+            std::cin >> points[i].x >> points[i].y;
+        }
+        return new Triangle(points);
+    }
+    case 2:
+    {
+        Point points[6];
+        std::cout << "Enter 6 points of the hexagon in order. Example: 'x y': " << std::endl;
+        for (int i = 0; i < 6; i++)
+        {
+            std::cin >> points[i].x >> points[i].y;
+        }
+        return new Hexagon(points);
+    }
+    case 3:
+    {
+        Point points[8];
+        std::cout << "Enter 8 points of the octagon in order. Example: 'x y': " << std::endl;
+        for (int i = 0; i < 8; i++)
+        {
+            std::cin >> points[i].x >> points[i].y;
+        }
+        return new Octagon(points);
+    }
+    default:
+        std::cout << "Invalid input. Choose 1, 2 or 3" << std::endl;
+        break;
+    }
+    return nullptr;
 }
 int main()
 {
-    std::cout << "Welcome to Eleven Program" << std::endl;
-    Eleven num1, num2;
-    bool numbersEntered = false;
-    int choise = 0;
+    std::cout << "Welcome to Figures Program" << std::endl;
+    int arraySize;
+    std::cout << "Let's create array for figures. Enter size of it: ";
+    std::cin >> arraySize;
 
-    while (choise != 6)
+    Figure *figuresArray[arraySize];
+    int figureCount = 0;
+    int choise = 0;
+    while (choise != 5)
     {
         showMenu();
         if (!(std::cin >> choise))
@@ -34,120 +85,91 @@ int main()
             {
             case 1:
             {
-                if (numbersEntered)
+                if (figureCount >= arraySize)
                 {
-                    std::cout << "Numbers already entered" << std::endl;
+                    std::cout << "Array is full, can't add figure" << std::endl;
                     break;
                 }
-                std::string inputNum1, inputNum2;
-                std::cout << "Enter first number: ";
-                std::cin >> inputNum1;
-                num1 = Eleven(inputNum1);
-                std::cout << "Enter second number: ";
-                std::cin >> inputNum2;
-                num2 = Eleven(inputNum2);
-                numbersEntered = true;
-                std::cout << "Numbers entered" << std::endl;
+                Figure *figure = addFigure();
+                if (figure != nullptr)
+                {
+                    figuresArray[figureCount] = figure;
+                    figureCount++;
+                }
                 break;
             }
             case 2:
             {
-                if (!numbersEntered)
+                if (figureCount == 0)
                 {
-                    std::cout << "Please enter numbers before this operation" << std::endl;
+                    std::cout << "Array is empty, can't delete figure" << std::endl;
                     break;
                 }
-                Eleven sumResult = num1;
-                sumResult += num2;
-                std::cout << "Sum of numbers: ";
-                for (size_t i = 0; i < sumResult.getSize(); i++)
+                std::cout << "Size of array is " << figureCount << std::endl;
+                std::cout << "Enter index of figure to delete: ";
+                int index;
+                std::cin >> index;
+                if (index < 0 || index >= figureCount)
                 {
-                    std::cout << sumResult.getData()[i];
+                    std::cout << "Invalid index" << std::endl;
+                    break;
                 }
-                std::cout << std::endl;
+                delete figuresArray[index];
+                for (int i = index; i < figureCount - 1; i++)
+                {
+                    figuresArray[i] = figuresArray[i + 1];
+                }
+                figureCount--;
+                std::cout << "Figure successfully deleted" << std::endl;
                 break;
             }
             case 3:
             {
-                if (!numbersEntered)
-                {
-                    std::cout << "Please enter numbers before this operation" << std::endl;
-                    break;
+                double totalArea = 0;
+                for (int i = 0; i < figureCount; i++) {
+                    totalArea += static_cast<double>(*figuresArray[i]);
                 }
-                Eleven subResult = num1;
-                subResult -= num2;
-                std::cout << "Subtraction result: ";
-                for (size_t i = 0; i < subResult.getSize(); i++)
-                {
-                    std::cout << subResult.getData()[i];
-                }
-                std::cout << std::endl;
+                std::cout << "Total area is " << totalArea << std::endl;
                 break;
             }
             case 4:
             {
-                if (!numbersEntered)
+                if (figureCount == 0)
                 {
-                    std::cout << "Please enter numbers before this operation" << std::endl;
+                    std::cout << "Array is empty, can't calculate geometrical center" << std::endl;
                     break;
                 }
-                std::cout << "Comparision result: ";
-                if (num1 == num2)
+                std::cout << "Size of array is " << figureCount << std::endl;
+                std::cout << "Enter index of figure to calculate geometrical center: ";
+                int index;
+                std::cin >> index;
+                if (index < 0 || index >= figureCount)
                 {
-                    std::cout << "Equal" << std::endl;
+                    std::cout << "Invalid index" << std::endl;
+                    break;
                 }
-                else if (num1 < num2)
-                {
-                    std::cout << "First is less than second" << std::endl;
-                }
-                else if (num1 > num2)
-                {
-                    std::cout << "First is greater than second" << std::endl;
-                }
+                std::cout << "Geometrical center is " << figuresArray[index]->getGeometricalCenter() << std::endl;
                 break;
             }
-
             case 5:
             {
-                if (!numbersEntered)
+                std::cout << "Goodbye!" << std::endl;
+                for (int i = 0; i < figureCount; i++)
                 {
-                    std::cout << "Please enter numbers before this operation" << std::endl;
-                    break;
+                    delete figuresArray[i];
                 }
-                std::cout << "First number: ";
-                for (size_t i = 0; i < num1.getSize(); i++)
-                {
-                    std::cout << num1.getData()[i];
-                }
-                std::cout << std::endl;
-
-                std::cout << "Second number: ";
-                for (size_t i = 0; i < num2.getSize(); i++)
-                {
-                    std::cout << num2.getData()[i];
-                }
-                std::cout << std::endl;
-                break;
+                return 0;
             }
-            case 6:
-            {
-                std::cout << "Bye!" << std::endl;
-                break;
-            }
-
             default:
-                std::cout << "Invalid option" << std::endl;
-                break;
+            std::cout << "Invalid option" << std::endl;
+            break;
             }
         }
-        catch (const InvalidDigit &e)
+        catch (const std::exception& e)
         {
-            std::cout << e.what() << std::endl;
+            std::cerr << e.what() << std::endl;
         }
-        catch (const NegativeSubtraction &e)
-        {
-            std::cout << e.what() << std::endl;
-        }
+
     }
     return 0;
 }

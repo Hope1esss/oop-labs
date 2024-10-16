@@ -1,4 +1,6 @@
 #include "../include/Triangle.h"
+#include <cmath>
+
 Triangle::Triangle(const Point points[3])
 {
     for (int i = 0; i < 3; i++)
@@ -6,7 +8,7 @@ Triangle::Triangle(const Point points[3])
         this->points[i] = points[i];
     }
 
-    isTriangle();
+    isValidTriangle();
 }
 
 Triangle &Triangle::operator=(const Triangle &other)
@@ -72,21 +74,16 @@ void Triangle::getPointsData() const
     std::cout << *this << std::endl;
 }
 
-bool Triangle::isTriangle() const
+bool Triangle::isValidTriangle() const
 {
-    double area = 0.5 * std::abs(points[0].x * (points[1].y - points[2].y) + points[1].x * (points[2].y - points[0].y) + points[2].x * (points[0].y - points[1].y));
-
-    return area > 0;
-}
-
-std::ostream &operator<<(std::ostream &os, const Triangle &triangle)
-{
-    os << "Triangle points: ";
-    for (int i = 0; i < 3; i++)
+    double side1 = std::sqrt(std::pow(points[1].x - points[0].x, 2) + std::pow(points[1].y - points[0].y, 2));
+    double side2 = std::sqrt(std::pow(points[2].x - points[1].x, 2) + std::pow(points[2].y - points[1].y, 2));
+    double side3 = std::sqrt(std::pow(points[2].x - points[0].x, 2) + std::pow(points[2].y - points[0].y, 2));
+    if (side1 + side2 > side3 && side1 + side3 > side2 && side2 + side3 > side1)
     {
-        os << "(" << triangle.points[i].x << ", " << triangle.points[i].y << ") ";
+        return true;
     }
-    return os;
+    throw TriangleValidException();
 }
 
 std::istream &operator>>(std::istream &is, Triangle &triangle)
@@ -99,7 +96,7 @@ std::istream &operator>>(std::istream &is, Triangle &triangle)
 
     if (is.fail())
     {
-        throw TriangleException();
+        throw TrianglePointsException();
     }
 
     for (int i = 0; i < 3; i++)
@@ -107,4 +104,14 @@ std::istream &operator>>(std::istream &is, Triangle &triangle)
         triangle.points[i] = points[i];
     }
     return is;
+}
+
+std::ostream &operator<<(std::ostream &os, const Triangle &triangle)
+{
+    os << "Triangle points: ";
+    for (int i = 0; i < 3; i++)
+    {
+        os << "(" << triangle.points[i].x << ", " << triangle.points[i].y << ") ";
+    }
+    return os;
 }

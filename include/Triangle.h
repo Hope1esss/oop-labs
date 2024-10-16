@@ -13,17 +13,23 @@ public:
     operator double() const override;
     Point getGeometricalCenter() const override;
     void getPointsData() const override;
+    bool isValidTriangle() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
     friend std::istream &operator>>(std::istream &is, Triangle &triangle);
+    friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
 
 private:
     Point points[3];
-    bool isTriangle() const;
 };
 
-class TriangleException : public std::invalid_argument
+class TrianglePointsException : public std::invalid_argument
 {
 public:
-    TriangleException() : std::invalid_argument("Invalid numbers of points for triangle. It should be 3 points") {}
+    TrianglePointsException() : std::invalid_argument("Invalid numbers of points for triangle. It should be 3 points") {}
+};
+
+class TriangleValidException : public std::invalid_argument
+{
+public:
+    TriangleValidException() : std::invalid_argument("Points can't form valid triangle") {}
 };
