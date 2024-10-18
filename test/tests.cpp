@@ -8,14 +8,14 @@ TEST(TriangleTest, ValidTriangleConstruction)
 {
     Point points[3] = {{1, 0}, {2, 1}, {2, 0}};
 
-    ASSERT_NO_THROW(Triangle triangle(points));
+    EXPECT_NO_THROW(Triangle triangle(points));
 }
 
 TEST(TriangleTest, InvalidTriangleConstruction)
 {
     Point points[3] = {{0, 0}, {0, 0}, {0, 0}};
 
-    ASSERT_ANY_THROW(Triangle triangle(points));
+    EXPECT_ANY_THROW(Triangle triangle(points));
 }
 
 TEST(TriangleTest, GeometricalCenterTrue)
@@ -26,7 +26,7 @@ TEST(TriangleTest, GeometricalCenterTrue)
 
     Point realPoint = triangle.getGeometricalCenter();
 
-    ASSERT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
+    EXPECT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
 TEST(TriangleTest, GeometricalCenterFalse)
@@ -37,21 +37,21 @@ TEST(TriangleTest, GeometricalCenterFalse)
 
     Point realPoint = triangle.getGeometricalCenter();
 
-    ASSERT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
+    EXPECT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
 TEST(HexagonTest, ValidHexagonConstruction)
 {
     Point points[6] = {{5, 0}, {2.5, 4.33}, {-2.5, 4.33}, {-5, 0}, {-2.5, -4.33}, {2.5, -4.33}};
 
-    ASSERT_NO_THROW(Hexagon hexagon(points));
+    EXPECT_NO_THROW(Hexagon hexagon(points));
 }
 
 TEST(HexagonText, InvalidHexagonConstruction)
 {
     Point points[6] = {{1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
 
-    ASSERT_ANY_THROW(Hexagon hexagon(points));
+    EXPECT_ANY_THROW(Hexagon hexagon(points));
 }
 
 TEST(HexagonTest, GeometricalCenterTrue)
@@ -62,7 +62,7 @@ TEST(HexagonTest, GeometricalCenterTrue)
 
     Point realPoint = hexagon.getGeometricalCenter();
 
-    ASSERT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
+    EXPECT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
 TEST(HexagonTest, GeometricalCenterFalse)
@@ -73,7 +73,7 @@ TEST(HexagonTest, GeometricalCenterFalse)
 
     Point realPoint = hexagon.getGeometricalCenter();
 
-    ASSERT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
+    EXPECT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
 
 TEST(OctagonText, ValidOctagonConstruction)
@@ -81,14 +81,14 @@ TEST(OctagonText, ValidOctagonConstruction)
     Point points[8] = {{5, 0}, {3.53553, 3.53553}, {0, 5}, {-3.53553, 3.53553}, {-5, 0}, {-3.53553, -3.53553}, {0, -5}, {3.53553, -3.53553}}
 ;
 
-    ASSERT_NO_THROW(Octagon octagon(points));
+    EXPECT_NO_THROW(Octagon octagon(points));
 }
 
 TEST(OctagonText, InvalidOctagonConstruction)
 {
     Point points[8] = {{1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
 
-    ASSERT_ANY_THROW(Octagon octagon(points));
+    EXPECT_ANY_THROW(Octagon octagon(points));
 }
 
 TEST(OctagonTest, GeometricalCenterTrue)
@@ -99,7 +99,7 @@ TEST(OctagonTest, GeometricalCenterTrue)
 
     Point realPoint = octagon.getGeometricalCenter();
 
-    ASSERT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
+    EXPECT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 
 }
 
@@ -111,5 +111,5 @@ TEST(OctagonTest, GeometricalCenterFalse)
 
     Point realPoint = octagon.getGeometricalCenter();
 
-    ASSERT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
+    EXPECT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }

@@ -74,7 +74,7 @@ int main()
         showMenu();
         if (!(std::cin >> choise))
         {
-            std::cerr << "Invalid input. Enter number from 1 to 7" << std::endl;
+            std::cerr << "Invalid input. Enter number from 1 to 5" << std::endl;
             std::cin.clear();
             continue;
         }
