@@ -1,25 +1,27 @@
+#pragma once
 #include "../include/Figure.h"
 
-class Hexagon : public Figure
+template <Scalar T>
+class Hexagon : public Figure<T>
 {
 public:
     Hexagon() = default;
-    Hexagon(const Point points[6]);
+    Hexagon(const Point<T> points[6]);
 
     Hexagon &operator=(const Hexagon &other);
     Hexagon &operator=(Hexagon &&other) noexcept;
 
     bool operator==(const Figure &other) const override;
     void getPointsData() const override;
-    Point getGeometricalCenter() const override;
+    Point<T> getGeometricalCenter() const override;
     operator double() const override;
     bool isValidHexagon() const;
 
-    friend std::istream &operator>>(std::istream &is, Hexagon &Hexagon);    
-    friend std::ostream &operator<<(std::ostream &os, const Hexagon &Hexagon);
+    friend std::istream &operator>>(std::istream &is, Hexagon<T> &Hexagon);    
+    friend std::ostream &operator<<(std::ostream &os, const Hexagon<T> &Hexagon);
 
 private:
-    Point points[6];
+    std::unique_ptr<Point<T>> points[6];
 };
 
 class HexagonPointsException : public std::invalid_argument
