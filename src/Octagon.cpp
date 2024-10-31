@@ -1,27 +1,34 @@
 #include "../include/Octagon.h"
 #include <cmath>
-Octagon::Octagon(const Point points[8])
+#include <memory>
+
+template <Scalar T>
+Octagon<T>::Octagon(const Point<T> points[8])
 {
     for (int i = 0; i < 8; i++)
     {
-        this->points[i] = points[i];
+        this->points[i] = std::make_unique<Point<T>>(points[i]);
     }
+
     isValidOctagon();
 }
 
-Octagon &Octagon::operator=(const Octagon &other)
+template <Scalar T>
+Octagon<T> &Octagon<T>::operator=(const Octagon<T> &other)
 {
     if (this != &other)
     {
         for (int i = 0; i < 8; i++)
         {
-            points[i] = other.points[i];
+            points[i] = std::make_unique<Point<T>>(other.points[i]);
         }
     }
+
     return *this;
 }
 
-Octagon &Octagon::operator=(Octagon &&other) noexcept
+template <Scalar T>
+Octagon<T> &Octagon<T>::operator=(Octagon<T> &&other) noexcept
 {
     if (this != &other)
     {
@@ -30,10 +37,12 @@ Octagon &Octagon::operator=(Octagon &&other) noexcept
             points[i] = std::move(other.points[i]);
         }
     }
+
     return *this;
 }
 
-bool Octagon::operator==(const Figure &other) const
+template <Scalar T>
+bool Octagon<T>::operator==(const Figure<T> &other) const
 {
     const Octagon *otherOctagon = dynamic_cast<const Octagon *>(&other);
     if (otherOctagon == nullptr)
@@ -43,60 +52,68 @@ bool Octagon::operator==(const Figure &other) const
 
     for (int i = 0; i < 8; i++)
     {
-        if (points[i].x != otherOctagon->points[i].x && points[i].y != otherOctagon->points[i].y)
+        if (points[i]->x != otherOctagon->points[i]->x || points[i]->y != otherOctagon->points[i]->y)
         {
             return false;
         }
     }
+
     return true;
 }
 
-Octagon::operator double() const
+template <Scalar T>
+Octagon<T>::operator double() const
 {
     double area = 0;
 
     for (int i = 0; i < 8; i++)
     {
         int j = (i + 1) % 8;
-        area += points[i].x * points[j].y - points[j].x * points[i].y;
+        area += points[i]->x * points[j]->y - points[j]->x * points[i]->y;
     }
 
     return std::abs(area) / 2;
 }
-Point Octagon::getGeometricalCenter() const
+
+template <Scalar T>
+Point<T> Octagon<T>::getGeometricalCenter() const
 {
-    Point center;
-    center.x = (points[0].x + points[1].x + points[2].x) / 8;
-    center.y = (points[0].y + points[1].y + points[2].y) / 8;
+    Point<T> center;
+    center.x = (points[0]->x + points[1]->x + points[2]->x) / 8;
+    center.y = (points[0]->y + points[1]->y + points[2]->y) / 8;
     return center;
 }
 
-void Octagon::getPointsData() const
+template <Scalar T>
+void Octagon<T>::getPointsData() const
 {
     std::cout << *this << std::endl;
 }
 
-bool Octagon::isValidOctagon() const
+template <Scalar T>
+bool Octagon<T>::isValidOctagon() const
 {
     const double epsilon = 1e-3;
-    double expectedSideLength = std::sqrt(std::pow(points[1].x - points[0].x, 2) + std::pow(points[1].y - points[0].y, 2));
+    double expectedSideLength = std::sqrt(std::pow(points[1]->x - points[0]->x, 2) + std::pow(points[1]->y - points[0]->y, 2));
 
     for (int i = 0; i < 8; i++)
     {
         int next = (i + 1) % 8;
-        double currentSideLength = std::sqrt(std::pow(points[next].x - points[i].x, 2) + std::pow(points[next].y - points[i].y, 2));
+        double currentSideLength = std::sqrt(std::pow(points[next]->x - points[i]->x, 2) + std::pow(points[next]->y - points[i]->y, 2));
 
         if (std::abs(currentSideLength - expectedSideLength) > epsilon)
         {
-            throw OctagonValidException();
+            throw OctagonValidationException();
         }
     }
     return true;
 }
 
-std::istream &operator>>(std::istream &is, Octagon &Octagon)
+template <Scalar T>
+std::istream &operator>>(std::istream &is, Octagon<T> &octagon)
 {
-    Point points[8];
+    Point<T> points[8];
+
     for (int i = 0; i < 8; i++)
     {
         is >> points[i];
@@ -109,17 +126,19 @@ std::istream &operator>>(std::istream &is, Octagon &Octagon)
 
     for (int i = 0; i < 8; i++)
     {
-        Octagon.points[i] = points[i];
+        octagon.points[i] = std::make_unique<Point<T>>(points[i]);
     }
+
     return is;
 }
 
-std::ostream &operator<<(std::ostream &os, const Octagon &Octagon)
+template <Scalar T>
+std::ostream &operator<<(std::ostream &os, const Octagon<T> &octagon)
 {
     os << "Octagon points: ";
     for (int i = 0; i < 8; i++)
     {
-        os << "(" << Octagon.points[i].x << ", " << Octagon.points[i].y << ") ";
+        os << "(" << octagon.points[i]->x << ", " << octagon.points[i]->y << ") ";
     }
     return os;
 }

@@ -1,5 +1,9 @@
 #pragma once
+#include <stdexcept>
+#include <memory>
+#include <iostream>
 #include "../include/Figure.h"
+#include "../include/Point.h"
 
 template <Scalar T>
 class Triangle : public Figure<T>
@@ -11,14 +15,19 @@ public:
     Triangle &operator=(const Triangle &other);
     Triangle &operator=(Triangle &&other) noexcept;
 
-    bool operator==(const Figure &other) const override;
-    operator double() const override;
-    Point<T> getGeometricalCenter() const override;
+    bool operator==(const Figure<T> &other) const override;
     void getPointsData() const override;
+    Point<T> getGeometricalCenter() const override;
+    operator double() const override;
     bool isValidTriangle() const;
 
-    friend std::istream &operator>>(std::istream &is, Triangle<T> &triangle);
-    friend std::ostream &operator<<(std::ostream &os, const Triangle<T> &triangle);
+    template <Scalar S>
+    friend std::istream &operator>>(std::istream &is, Triangle<S> &triangle);
+
+    template <Scalar S>
+    friend std::ostream &operator<<(std::ostream &os, const Triangle<S> &triangle);
+
+    ~Triangle() noexcept = default;
 
 private:
     std::unique_ptr<Point<T>> points[3];
@@ -35,3 +44,4 @@ class TriangleValidationException : public std::invalid_argument
 public:
     TriangleValidationException() : std::invalid_argument("Points can't form valid triangle") {}
 };
+

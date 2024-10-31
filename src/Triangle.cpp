@@ -1,29 +1,34 @@
 #include "../include/Triangle.h"
 #include <cmath>
+#include <memory>
 
-Triangle::Triangle(const Point points[3])
+template <Scalar T>
+Triangle<T>::Triangle(const Point<T> points[3])
 {
     for (int i = 0; i < 3; i++)
     {
-        this->points[i] = points[i];
+        this->points[i] = std::make_unique<Point<T>>(points[i]);
     }
 
     isValidTriangle();
 }
 
-Triangle &Triangle::operator=(const Triangle &other)
+template <Scalar T>
+Triangle<T> &Triangle<T>::operator=(const Triangle<T> &other)
 {
     if (this != &other)
     {
         for (int i = 0; i < 3; i++)
         {
-            points[i] = other.points[i];
+            points[i] = std::make_unique<Point<T>>(other.points[i]);
         }
     }
+
     return *this;
 }
 
-Triangle &Triangle::operator=(Triangle &&other) noexcept
+template <Scalar T>
+Triangle<T> &Triangle<T>::operator=(Triangle<T> &&other) noexcept
 {
     if (this != &other)
     {
@@ -32,10 +37,12 @@ Triangle &Triangle::operator=(Triangle &&other) noexcept
             points[i] = std::move(other.points[i]);
         }
     }
+
     return *this;
 }
 
-bool Triangle::operator==(const Figure &other) const
+template <Scalar T>
+bool Triangle<T>::operator==(const Figure<T> &other) const
 {
     const Triangle *otherTriangle = dynamic_cast<const Triangle *>(&other);
     if (otherTriangle == nullptr)
@@ -45,7 +52,7 @@ bool Triangle::operator==(const Figure &other) const
 
     for (int i = 0; i < 3; i++)
     {
-        if (points[i].x != otherTriangle->points[i].x && points[i].y != otherTriangle->points[i].y)
+        if (points[i]->x != otherTriangle->points[i]->x || points[i]->y != otherTriangle->points[i]->y)
         {
             return false;
         }
@@ -54,41 +61,49 @@ bool Triangle::operator==(const Figure &other) const
     return true;
 }
 
-Triangle::operator double() const
+template <Scalar T>
+Triangle<T>::operator double() const
 {
-    double area = 0.5 * std::abs(points[0].x * (points[1].y - points[2].y) + points[1].x * (points[2].y - points[0].y) + points[2].x * (points[0].y - points[1].y));
+    double area = 0.5 * std::abs(points[0]->x * (points[1]->y - points[2]->y) + points[1]->x * (points[2]->y - points[0]->y) + points[2]->x * (points[0]->y - points[1]->y));
 
     return area;
 }
 
-Point Triangle::getGeometricalCenter() const
+template <Scalar T>
+Point<T> Triangle<T>::getGeometricalCenter() const
 {
-    Point center;
-    center.x = (points[0].x + points[1].x + points[2].x) / 3;
-    center.y = (points[0].y + points[1].y + points[2].y) / 3;
+    Point<T> center;
+    center.x = (points[0]->x + points[1]->x + points[2]->x) / 3;
+    center.y = (points[0]->y + points[1]->y + points[2]->y) / 3;
     return center;
 }
 
-void Triangle::getPointsData() const
+template <Scalar T>
+void Triangle<T>::getPointsData() const
 {
     std::cout << *this << std::endl;
 }
 
-bool Triangle::isValidTriangle() const
+template <Scalar T>
+bool Triangle<T>::isValidTriangle() const
 {
-    double side1 = std::sqrt(std::pow(points[1].x - points[0].x, 2) + std::pow(points[1].y - points[0].y, 2));
-    double side2 = std::sqrt(std::pow(points[2].x - points[1].x, 2) + std::pow(points[2].y - points[1].y, 2));
-    double side3 = std::sqrt(std::pow(points[2].x - points[0].x, 2) + std::pow(points[2].y - points[0].y, 2));
+    double side1 = std::sqrt(std::pow(points[1]->x - points[0]->x, 2) + std::pow(points[1]->y - points[0]->y, 2));
+    double side2 = std::sqrt(std::pow(points[2]->x - points[1]->x, 2) + std::pow(points[2]->y - points[1]->y, 2));
+    double side3 = std::sqrt(std::pow(points[2]->x - points[0]->x, 2) + std::pow(points[2]->y - points[0]->y, 2));
+
     if (side1 + side2 > side3 && side1 + side3 > side2 && side2 + side3 > side1)
     {
         return true;
     }
-    throw TriangleValidException();
+
+    throw TriangleValidationException();
 }
 
-std::istream &operator>>(std::istream &is, Triangle &triangle)
+template <Scalar T>
+std::istream &operator>>(std::istream &is, Triangle<T> &triangle)
 {
-    Point points[3];
+    Point<T> points[3];
+
     for (int i = 0; i < 3; i++)
     {
         is >> points[i];
@@ -101,17 +116,19 @@ std::istream &operator>>(std::istream &is, Triangle &triangle)
 
     for (int i = 0; i < 3; i++)
     {
-        triangle.points[i] = points[i];
+        triangle.points[i] = std::make_unique<Point<T>>(points[i]);
     }
+
     return is;
 }
 
-std::ostream &operator<<(std::ostream &os, const Triangle &triangle)
+template <Scalar T>
+std::ostream &operator<<(std::ostream &os, const Triangle<T> &triangle)
 {
     os << "Triangle points: ";
     for (int i = 0; i < 3; i++)
     {
-        os << "(" << triangle.points[i].x << ", " << triangle.points[i].y << ") ";
+        os << "(" << triangle.points[i]->x << ", " << triangle.points[i]->y << ") ";
     }
     return os;
 }

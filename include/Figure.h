@@ -4,6 +4,7 @@
 template <Scalar T>
 class Figure
 {
+public:
     virtual ~Figure() = default;
 
     virtual void getPointsData() const = 0;

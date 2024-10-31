@@ -1,11 +1,14 @@
 #pragma once
 #include <concepts>
+#include <memory>
+#include <iostream>
 
 template <typename T>
 concept Scalar = std::is_arithmetic_v<T>;
 
 template <Scalar T>
 class Point{
+public:
     T x, y;
     Point(): x(0), y(0) {}
     Point(T x, T y): x(x), y(y) {}

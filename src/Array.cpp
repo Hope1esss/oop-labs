@@ -2,7 +2,7 @@
 #include <memory>
 
 template <typename T>
-Array<T>::Array() : size(0), capacity(10), data(std::make_unique<std::shared_ptr<T>[]>(capacity)) {}
+Array<T>::Array() : size(0), capacity(2), data(std::make_unique<std::shared_ptr<T>[]>(capacity)) {}
 
 template <typename T>
 Array<T>::Array(const Array &other) : size(other.size), capacity(other.capacity), data(std::make_unique<std::shared_ptr<T>[]>(other.capacity))
@@ -112,5 +112,4 @@ void Array<T>::resize(size_t newCapacity)
     }
     capacity = newCapacity;
     data = std::move(tempData);
-    delete[] tempData;
 }

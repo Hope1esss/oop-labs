@@ -14,7 +14,6 @@ public:
     void remove(size_t index);
     size_t getSize() const;
     size_t getCapacity() const;
-
     Array &operator=(const Array &other);
     Array &operator=(Array &&other) noexcept;
 
