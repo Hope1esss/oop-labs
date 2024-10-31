@@ -46,6 +46,29 @@ TEST(ArrayTest, AppendAndRemoveTest)
     EXPECT_EQ(array.getSize(), 0);
 }
 
+TEST(ArrayTest, TotalAreaTest)
+{
+    Array<Figure<double>> array;
+
+    Point<double> trianglePoints[3] = {Point<double>(1, 0), Point<double>(2, 1), Point<double>(2, 0)};
+    Point<double> hexagonPoints[6] = {Point<double>(5, 0), Point<double>(2.5, 4.33), Point<double>(-2.5, 4.33), Point<double>(-5, 0), Point<double>(-2.5, -4.33), Point<double>(2.5, -4.33)};
+    Point<double> octagonPoints[8] = {Point<double>(5, 0), Point<double>(3.53553, 3.53553), Point<double>(0, 5), Point<double>(-3.53553, 3.53553), Point<double>(-5, 0), Point<double>(-3.53553, -3.53553), Point<double>(0, -5), Point<double>(3.53553, -3.53553)};
+
+    std::shared_ptr<Figure<double>> triangle = std::make_shared<Triangle<double>>(trianglePoints);
+    std::shared_ptr<Figure<double>> hexagon = std::make_shared<Hexagon<double>>(hexagonPoints);
+    std::shared_ptr<Figure<double>> octagon = std::make_shared<Octagon<double>>(octagonPoints);
+
+    array.append(triangle);
+    array.append(hexagon);
+    array.append(octagon);
+
+    double expectedArea = 0.5 + 64.95 + 70.7106;
+
+    double realArea = array.calculateTotalArea();
+
+    EXPECT_TRUE(std::abs(expectedArea - realArea) < 1e-3);
+}
+
 TEST(ArrayTest, GetItemTest)
 {
     Array<Figure<int>> array;

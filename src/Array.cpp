@@ -58,6 +58,17 @@ size_t Array<T>::getCapacity() const
 }
 
 template <typename T>
+double Array<T>::calculateTotalArea() const
+{
+    double totalArea = 0;
+    for (size_t i = 0; i < size; i++)
+    {
+        totalArea += static_cast<double>(*data[i]);
+    }
+    return totalArea;
+}
+
+template <typename T>
 Array<T> &Array<T>::operator=(const Array &other)
 {
     if (this == &other)
