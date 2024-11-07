@@ -70,7 +70,8 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "charconv": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "shared_mutex": "cpp"
     },
     "makefile.configureOnOpen": true,
     "C_Cpp.default.compilerPath": "/usr/bin/gcc"
