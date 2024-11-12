@@ -5,19 +5,23 @@
 
 class MyMemoryResource : public std::pmr::memory_resource
 {
-private:
-    std::map<void*, size_t> allocatedBlocks;
+public:
+    MyMemoryResource(size_t poolSize);
+    ~MyMemoryResource();
 
 protected:
-    void* do_allocate(size_t bytes, size_t alignment) override;
-    void do_deallocate(void *p, size_t bytes, size_t alignment) override;
+    void *do_allocate(size_t bytes, size_t alignment) override;
+    void do_deallocate(void *ptr, size_t bytes, size_t alignment) override;
     bool do_is_equal(const std::pmr::memory_resource &other) const noexcept override;
 
-public:
-    ~MyMemoryResource();
+private:
+    std::map<void *, size_t> allocatedBlocks;
+    void *pool;
+    size_t poolSize;
 };
 
-class BadAllocationException : public std::bad_alloc
+class DeallocateError : public std::invalid_argument
 {
-    BadAllocationException() : std::bad_alloc() {}
+public:
+    DeallocateError() : std::invalid_argument("Unknown address to deallocate") {}
 };
