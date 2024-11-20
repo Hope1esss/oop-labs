@@ -1,0 +1,4 @@
+Grizzly Bear 200 250
+Krusty Bear 220 230
+Chippy Squirrel 300 350
+Scooby Orc 320 330

@@ -1,6 +1,6 @@
 #include "../include/NPCFactory.h"
 
-NPC *NPCFactory::createNPC(const std::string &name, const std::string &type, int x, int y)
+NPC *NPCFactory::createNPC(int x, int y, const std::string &name, const std::string &type)
 {
     if (type == "Orc")
     {

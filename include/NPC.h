@@ -1,6 +1,10 @@
+#ifndef NPC_H
+#define NPC_H
+
 #include <string>
 #include <iostream>
 #include <cmath>
+#include "Visitor.h"
 
 class NPC
 {
@@ -17,8 +21,9 @@ public:
     std::string getType() const;
     std::pair<int, int> getPosition() const;
 
-    double distanceTo(NPC *other) const;
+    virtual void accept(Visitor *visitor) = 0;
 
-    virtual void interact(NPC *other) = 0;
+    double distanceTo(NPC *other) const;
     void printInfo() const;
 };
+#endif
