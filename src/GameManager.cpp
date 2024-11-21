@@ -2,6 +2,7 @@
 #include "../include/BattleVisitor.h"
 #include <random>
 #include <ctime>
+#include <vector>
 
 GameManager::~GameManager()
 {
@@ -34,7 +35,6 @@ void GameManager::removeNPC(NPC *npc, std::vector<NPC *> &npcs)
 
 void GameManager::printNPCList() const
 {
-    std::cout << "List of NPCs:" << std::endl;
     for (const auto &npc : npcs)
     {
         npc->printInfo();
@@ -52,10 +52,10 @@ void GameManager::saveNPCsToFile(const std::string &filename) const
 
     for (const auto &npc : npcs)
     {
-        outputFile << npc->getName() << " "
-                   << npc->getType() << " "
-                   << npc->getPosition().first << " "
-                   << npc->getPosition().second << std::endl;
+        outputFile << npc->getPosition().first << " "
+                   << npc->getPosition().second << " "
+                   << npc->getName() << " "
+                   << npc->getType() << std::endl;
     }
 
     outputFile.close();
@@ -74,7 +74,7 @@ void GameManager::loadNPCsFromFile(const std::string &filename)
     int x, y;
     std::string name, type;
 
-    while (inputFile >> name >> type >> x >> y)
+    while (inputFile >> x >> y >> name >> type)
     {
         NPC *npc = NPCFactory::createNPC(x, y, name, type);
         if (npc)
@@ -93,26 +93,61 @@ void GameManager::loadNPCsFromFile(const std::string &filename)
 
 void GameManager::startBattle(double attackRange)
 {
-    std::shuffle(npcs.begin(), npcs.end(), std::default_random_engine(std::time(0)));
+    BattleVisitor::notify("Starting battle with attack range: " + std::to_string(attackRange), observers);
 
-    for (size_t i = 0; i < npcs.size(); i += 2)
+    while (npcs.size() > 1)
     {
-        if (i + 1 < npcs.size())
-        {
-            NPC *npc1 = npcs[i];
-            NPC *npc2 = npcs[i + 1];
+        bool anyBattleOccurred = false;
 
-            if (npc1 && npc2)
+        std::vector<NPC *> toRemove;
+
+        std::shuffle(npcs.begin(), npcs.end(), std::default_random_engine(std::time(nullptr)));
+
+        for (size_t i = 0; i < npcs.size(); i += 2)
+        {
+            if (i + 1 < npcs.size())
             {
-                BattleVisitor visitor(npc1, attackRange, npcs, observers);
+                NPC *npc1 = npcs[i];
+                NPC *npc2 = npcs[i + 1];
+
+                BattleVisitor visitor(npc1, attackRange, npcs, observers, toRemove);
                 npc2->accept(&visitor);
 
-                npcs.erase(std::remove(npcs.begin(), npcs.end(), nullptr), npcs.end());
+                if ((std::find(toRemove.begin(), toRemove.end(), npc1) != toRemove.end()) || (std::find(toRemove.begin(), toRemove.end(), npc2) != toRemove.end()))
+                {
+                    anyBattleOccurred = true;
+                }
             }
+        }
+
+        for (NPC *npc : toRemove)
+        {
+            removeNPC(npc, npcs);
+        }
+
+        if (!anyBattleOccurred)
+        {
+            BattleVisitor::notify("No more battles can occur", observers);
+            break;
         }
     }
 
-    std::cout << "Battle ended" << std::endl;
-    printNPCList();
-    saveNPCsToFile("npcs.txt");
+    // Вывод результата
+    if (npcs.size() == 1)
+    {
+        BattleVisitor::notify("Battle is over. The winner is: " + npcs[0]->getName() + " (" + npcs[0]->getType() + ")", observers);
+    }
+    else if (npcs.size() > 1)
+    {
+
+        BattleVisitor::notify("Battle is over. Friendship wins! No winner could be determined. Remaining NPCs:", observers);
+        for (const auto &npc : npcs)
+        {
+            BattleVisitor::notify(npc->getName() + " (" + npc->getType() + ")", observers);
+        }
+    }
+    else
+    {
+        BattleVisitor::notify("Battle is over. All NPCs are dead", observers);
+    }
 }

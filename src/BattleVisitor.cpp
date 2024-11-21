@@ -6,9 +6,9 @@
 #include <iostream>
 #include <algorithm>
 
-BattleVisitor::BattleVisitor(NPC *attacker, double attackRange, std::vector<NPC *> &npcs, std::vector<Observer *> &observers) : attacker(attacker), attackRange(attackRange), npcs(npcs), observers(observers) {}
+BattleVisitor::BattleVisitor(NPC *attacker, double attackRange, std::vector<NPC *> &npcs, std::vector<Observer *> &observers, std::vector<NPC *> &toRemove) : attacker(attacker), attackRange(attackRange), npcs(npcs), observers(observers), toRemove(toRemove) {}
 
-void BattleVisitor::notify(const std::string &event)
+void BattleVisitor::notify(const std::string &event, std::vector<Observer *> &observers)
 {
     for (auto &observer : observers)
     {
@@ -23,19 +23,19 @@ void BattleVisitor::visit(Orc *orc)
 
     if (attacker->getType() == "Orc")
     {
-        notify(attacker->getName() + " (Orc) killed " + orc->getName() + " (Orc)");
-        notify(orc->getName() + " (Orc) killed " + attacker->getName() + " (Orc)");
-        GameManager::removeNPC(attacker, npcs);
-        GameManager::removeNPC(orc, npcs);
+        notify(attacker->getName() + " (Orc) killed " + orc->getName() + " (Orc)", observers);
+        notify(orc->getName() + " (Orc) killed " + attacker->getName() + " (Orc)", observers);
+        toRemove.push_back(orc);
+        toRemove.push_back(attacker);
     }
     else if (attacker->getType() == "Bear")
     {
-        notify(orc->getName() + " (Orc) killed " + attacker->getName() + " (Bear)");
-        GameManager::removeNPC(attacker, npcs);
+        notify(orc->getName() + " (Orc) killed " + attacker->getName() + " (Bear)", observers);
+        toRemove.push_back(attacker);
     }
     else if (attacker->getType() == "Squirrel")
     {
-        notify(orc->getName() + " (Orc) avoids combat");
+        notify(orc->getName() + " (Orc) avoids combat", observers);
     }
 }
 
@@ -46,12 +46,12 @@ void BattleVisitor::visit(Squirrel *squirrel)
 
     if (attacker->getType() == "Bear")
     {
-        notify(attacker->getName() + " (Bear) killed " + squirrel->getName() + " (Squirrel)");
-        GameManager::removeNPC(squirrel, npcs);
+        notify(attacker->getName() + " (Bear) killed " + squirrel->getName() + " (Squirrel)", observers);
+        toRemove.push_back(squirrel);
     }
     else if ((attacker->getType() == "Orc") || (attacker->getType() == "Squirrel"))
     {
-        notify(squirrel->getName() + " (Squirrel) avoids combat");
+        notify(squirrel->getName() + " (Squirrel) avoids combat", observers);
     }
 }
 
@@ -61,16 +61,16 @@ void BattleVisitor::visit(Bear *bear)
         return;
     if (attacker->getType() == "Orc")
     {
-        notify(attacker->getName() + " (Orc) killed " + bear->getName() + " (Bear)");
-        GameManager::removeNPC(bear, npcs);
+        notify(attacker->getName() + " (Orc) killed " + bear->getName() + " (Bear)", observers);
+        toRemove.push_back(bear);
     }
     else if (attacker->getType() == "Squirrel")
     {
-        notify(bear->getName() + " (Bear) killed " + attacker->getName() + " (Squirrel)");
-        GameManager::removeNPC(attacker, npcs);
+        notify(bear->getName() + " (Bear) killed " + attacker->getName() + " (Squirrel)", observers);
+        toRemove.push_back(attacker);
     }
     else if (attacker->getType() == "Bear")
     {
-        notify(bear->getName() + " (Bear) avoids combat");
+        notify(bear->getName() + " (Bear) avoids combat", observers);
     }
 }

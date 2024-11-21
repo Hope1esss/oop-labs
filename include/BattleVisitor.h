@@ -13,13 +13,13 @@ private:
     double attackRange;
     std::vector<NPC *> &npcs;
     std::vector<Observer *> &observers;
-
-    void notify(const std::string &event);
+    std::vector<NPC *> &toRemove;
 
 public:
-    BattleVisitor(NPC *attacker, double attackRange, std::vector<NPC *> &npcs, std::vector<Observer *> &observers);
+    BattleVisitor(NPC *attacker, double attackRange, std::vector<NPC *> &npcs, std::vector<Observer *> &observers, std::vector<NPC *> &toRemove);
     void visit(Orc *orc) override;
     void visit(Squirrel *squirrel) override;
     void visit(Bear *bear) override;
+    static void notify(const std::string &event, std::vector<Observer *> &observers);
 };
 #endif
