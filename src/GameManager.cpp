@@ -33,6 +33,15 @@ void GameManager::removeNPC(NPC *npc, std::vector<NPC *> &npcs)
     }
 }
 
+void GameManager::getNPCs(std::vector<NPC *> &npcs) const
+{
+    npcs = this->npcs;
+}
+
+void GameManager::clearNPCs()
+{
+    npcs.clear();
+}
 void GameManager::printNPCList() const
 {
     for (const auto &npc : npcs)
@@ -93,7 +102,8 @@ void GameManager::loadNPCsFromFile(const std::string &filename)
 
 void GameManager::startBattle(double attackRange)
 {
-    BattleVisitor::notify("Starting battle with attack range: " + std::to_string(attackRange), observers);
+    int AFKBattleCounter = 0;
+    BattleVisitor::notify("Battle started with attack range: " + std::to_string(attackRange), observers);
 
     while (npcs.size() > 1)
     {
@@ -127,8 +137,11 @@ void GameManager::startBattle(double attackRange)
 
         if (!anyBattleOccurred)
         {
-            BattleVisitor::notify("No more battles can occur", observers);
-            break;
+            AFKBattleCounter;
+            if (AFKBattleCounter > 3)
+            {
+                break;
+            }
         }
     }
 
@@ -148,6 +161,6 @@ void GameManager::startBattle(double attackRange)
     }
     else
     {
-        BattleVisitor::notify("Battle is over. All NPCs are dead", observers);
+        BattleVisitor::notify("Battle is over. No winner could be determined. All NPCs are dead", observers);
     }
 }

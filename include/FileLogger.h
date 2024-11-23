@@ -1,6 +1,8 @@
 #include "Observer.h"
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <vector>
 
 class FileLogger : public Observer
 {
@@ -24,5 +26,16 @@ public:
         {
             outputFile << "Event: " << event << std::endl;
         }
+    }
+
+    void getLogs(std::vector<std::string> &lines, std::string &filename)
+    {
+        std::ifstream inputFile(filename);
+        std::string line;
+        while (std::getline(inputFile, line))
+        {
+            lines.push_back(line);
+        }
+        inputFile.close();
     }
 };
