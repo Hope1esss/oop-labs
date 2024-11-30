@@ -1,18 +1,18 @@
 #include "../include/NPCFactory.h"
 
-NPC *NPCFactory::createNPC(int x, int y, const std::string &name, const std::string &type)
+std::shared_ptr<NPC> NPCFactory::createNPC(int x, int y, const std::string &name, const std::string &type)
 {
     if (type == "Orc")
     {
-        return new Orc(x, y, name);
+        return std::make_shared<Orc>(x, y, name);
     }
     else if (type == "Squirrel")
     {
-        return new Squirrel(x, y, name);
+        return std::make_shared<Squirrel>(x, y, name);
     }
     else if (type == "Bear")
     {
-        return new Bear(x, y, name);
+        return std::make_shared<Bear>(x, y, name);
     }
     else
     {

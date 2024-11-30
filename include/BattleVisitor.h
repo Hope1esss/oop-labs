@@ -5,21 +5,22 @@
 #include "NPC.h"
 #include "Observer.h"
 #include <vector>
+#include <memory>
 
 class BattleVisitor : public Visitor
 {
 private:
-    NPC *attacker;
+    std::shared_ptr<NPC> attacker;
     double attackRange;
-    std::vector<NPC *> &npcs;
-    std::vector<Observer *> &observers;
-    std::vector<NPC *> &toRemove;
+    std::vector<std::shared_ptr<NPC>> &npcs;
+    std::vector<std::shared_ptr<Observer>> &observers;
+    std::vector<std::shared_ptr<NPC>> &toRemove;
 
 public:
-    BattleVisitor(NPC *attacker, double attackRange, std::vector<NPC *> &npcs, std::vector<Observer *> &observers, std::vector<NPC *> &toRemove);
-    void visit(Orc *orc) override;
-    void visit(Squirrel *squirrel) override;
-    void visit(Bear *bear) override;
-    static void notify(const std::string &event, std::vector<Observer *> &observers);
+    BattleVisitor(std::shared_ptr<NPC> attacker, double attackRange, std::vector<std::shared_ptr<NPC>> &npcs, std::vector<std::shared_ptr<Observer>> &observers, std::vector<std::shared_ptr<NPC>> &toRemove);
+    void visit(std::shared_ptr<Orc> orc) override;
+    void visit(std::shared_ptr<Squirrel> squirrel) override;
+    void visit(std::shared_ptr<Bear> bear) override;
+    static void notify(const std::string &event, std::vector<std::shared_ptr<Observer>> &observers);
 };
 #endif

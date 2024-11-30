@@ -6,14 +6,10 @@
 
 GameManager::~GameManager()
 {
-    for (auto npc : npcs)
-    {
-        delete npc;
-    }
     npcs.clear();
 }
 
-void GameManager::addNPC(NPC *npc)
+void GameManager::addNPC(const std::shared_ptr<NPC> &npc)
 {
     npcs.push_back(npc);
 }
@@ -30,31 +26,29 @@ void GameManager::removeNPCByIndex(size_t index)
     }
 }
 
-void GameManager::addObserver(Observer *observer)
+void GameManager::addObserver(const std::shared_ptr<Observer> &observer)
 {
     observers.push_back(observer);
 }
 
-void GameManager::removeObserver(Observer *observer)
+void GameManager::removeObserver(const std::shared_ptr<Observer> &observer)
 {
     auto it = std::find(observers.begin(), observers.end(), observer);
     if (it != observers.end())
     {
-        delete *it;
         observers.erase(it);
     }
 }
-void GameManager::removeNPC(NPC *npc, std::vector<NPC *> &npcs)
+void GameManager::removeNPC(const std::shared_ptr<NPC> &npc, std::vector<std::shared_ptr<NPC>> &npcs)
 {
     auto it = std::find(npcs.begin(), npcs.end(), npc);
     if (it != npcs.end())
     {
-        delete *it;
         npcs.erase(it);
     }
 }
 
-void GameManager::getNPCs(std::vector<NPC *> &npcs) const
+void GameManager::getNPCs(std::vector<std::shared_ptr<NPC>> &npcs) const
 {
     npcs = this->npcs;
 }
@@ -112,14 +106,14 @@ void GameManager::loadNPCsFromFile(const std::string &filename)
 
     while (inputFile >> x >> y >> name >> type)
     {
-        NPC *npc = NPCFactory::createNPC(x, y, name, type);
+        std::shared_ptr<NPC> npc = NPCFactory::createNPC(x, y, name, type);
         if (npc)
         {
             addNPC(npc);
         }
         else
         {
-            std::cerr << "Error creating NPC: (" << name << ", " << type << ", " << x << ", " << y << ")" << std::endl;
+            std::cerr << "Error creating NPC: " << type << ", " << name << ", (" << x << ", " << y << ")" << std::endl;
         }
     }
     inputFile.close();
@@ -130,25 +124,23 @@ void GameManager::startBattle(double attackRange)
 {
     int AFKBattleCounter = 0;
     BattleVisitor::notify("Battle started with attack range: " + std::to_string(attackRange), observers);
-
+    std::vector<std::shared_ptr<NPC>> toRemove;
     while (npcs.size() > 1)
     {
         bool anyBattleOccurred = false;
 
-        std::vector<NPC *> toRemove;
         std::random_device rd;
         std::mt19937 gen(rd());
         std::shuffle(npcs.begin(), npcs.end(), gen);
-        
         for (size_t i = 0; i < npcs.size(); i += 2)
         {
             if (i + 1 < npcs.size())
             {
-                NPC *npc1 = npcs[i];
-                NPC *npc2 = npcs[i + 1];
+                std::shared_ptr<NPC> npc1 = npcs[i];
+                std::shared_ptr<NPC> npc2 = npcs[i + 1];
 
-                BattleVisitor visitor(npc1, attackRange, npcs, observers, toRemove);
-                npc2->accept(&visitor);
+                std::shared_ptr<BattleVisitor> visitor = std::make_shared<BattleVisitor>(npc1, attackRange, npcs, observers, toRemove);
+                npc2->accept(visitor);
 
                 if ((std::find(toRemove.begin(), toRemove.end(), npc1) != toRemove.end()) || (std::find(toRemove.begin(), toRemove.end(), npc2) != toRemove.end()))
                 {
@@ -157,7 +149,7 @@ void GameManager::startBattle(double attackRange)
             }
         }
 
-        for (NPC *npc : toRemove)
+        for (auto npc : toRemove)
         {
             removeNPC(npc, npcs);
         }
@@ -174,6 +166,8 @@ void GameManager::startBattle(double attackRange)
         {
             AFKBattleCounter = 0;
         }
+
+        toRemove.clear();
     }
 
     // Вывод результата

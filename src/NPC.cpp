@@ -19,7 +19,7 @@ std::pair<int, int> NPC::getPosition() const
     return {x, y};
 }
 
-double NPC::distanceTo(NPC *other) const
+double NPC::distanceTo(std::shared_ptr<NPC> other) const
 {
     return std::sqrt(std::pow(x - other->x, 2) + std::pow(y - other->y, 2));
 }

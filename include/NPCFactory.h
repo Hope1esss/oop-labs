@@ -7,6 +7,6 @@
 class NPCFactory
 {
 public:
-    static NPC *createNPC(int x, int y, const std::string &name, const std::string &type);
+    static std::shared_ptr<NPC> createNPC(int x, int y, const std::string &name, const std::string &type);
 };
 #endif

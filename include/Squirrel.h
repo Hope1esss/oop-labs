@@ -2,13 +2,13 @@
 #define SQUIRREL_H
 #include "NPC.h"
 
-class Squirrel : public NPC
+class Squirrel : public NPC, public std::enable_shared_from_this<Squirrel>
 {
 public:
     Squirrel(int x, int y, const std::string &name) : NPC(x, y, name, "Squirrel") {}
-    void accept(Visitor *visitor) override
+    void accept(std::shared_ptr<Visitor> visitor) override
     {
-        visitor->visit(this);
+        visitor->visit(shared_from_this());
     }
 };
 #endif

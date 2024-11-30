@@ -22,7 +22,7 @@ void showMenu()
     std::cout << "11. Exit" << std::endl;
 }
 
-NPC *addNPCManually()
+std::shared_ptr<NPC> addNPCManually()
 {
     int typeChoise = 0;
     std::cout << "Choose NPC type: " << std::endl;
@@ -59,7 +59,7 @@ NPC *addNPCManually()
     return nullptr;
 }
 
-NPC *addRandomNPCByType()
+std::shared_ptr<NPC> addRandomNPCByType()
 {
     int typeChoise = 0;
     std::cout << "Choose NPC type: " << std::endl;
@@ -88,9 +88,9 @@ NPC *addRandomNPCByType()
     return nullptr;
 }
 
-std::vector<NPC *> addRandomNPCs(int count)
+std::vector<std::shared_ptr<NPC>> addRandomNPCs(int count)
 {
-    std::vector<NPC *> npcs;
+    std::vector<std::shared_ptr<NPC>> npcs;
     std::srand(std::time(0));
     for (int i = 0; i < count; i++)
     {
@@ -123,11 +123,11 @@ std::vector<NPC *> addRandomNPCs(int count)
 int main()
 {
     GameManager gameManager;
-    FileLogger fileLogger("log.txt");
-    gameManager.addObserver(&fileLogger);
+    auto fileLogger = std::make_shared<FileLogger>("log.txt");
+    gameManager.addObserver(fileLogger);
 
-    ConsoleLogger consoleLogger;
-    gameManager.addObserver(&consoleLogger);
+    auto consoleLogger = std::make_shared<ConsoleLogger>();
+    gameManager.addObserver(consoleLogger);
     
     int choise = 0;
     double attackRange = 0.0;
@@ -148,7 +148,7 @@ int main()
             {
             case 1:
             {
-                NPC *npc = addNPCManually();
+                std::shared_ptr<NPC> npc = addNPCManually();
                 if (npc)
                 {
                     gameManager.addNPC(npc);
@@ -158,7 +158,7 @@ int main()
             }
             case 2:
             {
-                NPC *npc = addRandomNPCByType();
+                std::shared_ptr<NPC> npc = addRandomNPCByType();
                 if (npc)
                 {
                     gameManager.addNPC(npc);
@@ -168,7 +168,7 @@ int main()
             }
             case 3:
             {
-                std::vector<NPC *> npcs;
+                std::vector<std::shared_ptr<NPC>> npcs;
                 int count = 0;
                 std::cout << "Enter the number of NPCs to generate: ";
                 std::cin >> count;
@@ -260,7 +260,5 @@ int main()
             std::cerr << "Error: " << e.what() << std::endl;
         }
     }
-
-    gameManager.clearNPCs();
     return 0;
 }

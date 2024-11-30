@@ -9,18 +9,18 @@
 class GameManager
 {
 private:
-    std::vector<NPC *> npcs;
-    std::vector<Observer *> observers;
+    std::vector<std::shared_ptr<NPC>> npcs;
+    std::vector<std::shared_ptr<Observer>> observers;
 
 public:
     ~GameManager();
 
-    void addNPC(NPC *npc);
-    void addObserver(Observer* observer);
-    void removeObserver(Observer* observer);
-    static void removeNPC(NPC *npc, std::vector<NPC *> &npcs);
+    void addNPC(const std::shared_ptr<NPC> &npc);
+    void addObserver(const std::shared_ptr<Observer> &observer);
+    void removeObserver(const std::shared_ptr<Observer> &observer);
+    static void removeNPC(const std::shared_ptr<NPC> &npc, std::vector<std::shared_ptr<NPC>> &npcs);
     void removeNPCByIndex(size_t index);
-    void getNPCs(std::vector<NPC *> &npcs) const;
+    void getNPCs(std::vector<std::shared_ptr<NPC>> &npcs) const;
     void clearNPCs();
     void printNPCList() const;
     void saveNPCsToFile(const std::string &filename) const;

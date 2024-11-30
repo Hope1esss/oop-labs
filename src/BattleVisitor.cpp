@@ -6,9 +6,9 @@
 #include <iostream>
 #include <algorithm>
 
-BattleVisitor::BattleVisitor(NPC *attacker, double attackRange, std::vector<NPC *> &npcs, std::vector<Observer *> &observers, std::vector<NPC *> &toRemove) : attacker(attacker), attackRange(attackRange), npcs(npcs), observers(observers), toRemove(toRemove) {}
+BattleVisitor::BattleVisitor(std::shared_ptr<NPC> attacker, double attackRange, std::vector<std::shared_ptr<NPC>> &npcs, std::vector<std::shared_ptr<Observer>> &observers, std::vector<std::shared_ptr<NPC>> &toRemove) : attacker(attacker), attackRange(attackRange), npcs(npcs), observers(observers), toRemove(toRemove) {}
 
-void BattleVisitor::notify(const std::string &event, std::vector<Observer *> &observers)
+void BattleVisitor::notify(const std::string &event, std::vector<std::shared_ptr<Observer>> &observers)
 {
     for (auto &observer : observers)
     {
@@ -16,7 +16,7 @@ void BattleVisitor::notify(const std::string &event, std::vector<Observer *> &ob
     }
 }
 
-void BattleVisitor::visit(Orc *orc)
+void BattleVisitor::visit(std::shared_ptr<Orc> orc)
 {
     if (attacker->distanceTo(orc) > attackRange)
         return;
@@ -35,7 +35,7 @@ void BattleVisitor::visit(Orc *orc)
     }
 }
 
-void BattleVisitor::visit(Squirrel *squirrel)
+void BattleVisitor::visit(std::shared_ptr<Squirrel> squirrel)
 {
     if (attacker->distanceTo(squirrel) > attackRange)
         return;
@@ -47,7 +47,7 @@ void BattleVisitor::visit(Squirrel *squirrel)
     }
 }
 
-void BattleVisitor::visit(Bear *bear)
+void BattleVisitor::visit(std::shared_ptr<Bear> bear)
 {
     if (attacker->distanceTo(bear) > attackRange)
         return;

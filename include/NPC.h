@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include "Visitor.h"
-
+#include <memory>
 class NPC
 {
 protected:
@@ -21,9 +21,9 @@ public:
     std::string getType() const;
     std::pair<int, int> getPosition() const;
 
-    virtual void accept(Visitor *visitor) = 0;
+    virtual void accept(std::shared_ptr<Visitor> visitor) = 0;
 
-    double distanceTo(NPC *other) const;
+    double distanceTo(std::shared_ptr<NPC> other) const;
     void printInfo() const;
 };
 #endif
