@@ -3,6 +3,7 @@
 #include "../include/GameManager.h"
 #include "gtest/gtest.h"
 #include <string>
+#include <cstdio>
 
 TEST(NPCTests, NPCCreationTest)
 {
@@ -228,7 +229,9 @@ TEST(LoggerTests, LogToFileTest)
     fileLogger.getLogs(lines, logFile);
 
     EXPECT_EQ(lines.size(), 3);
-    EXPECT_EQ(lines[0], "Event: Battle started with attack range: " + std::to_string(attackRange));
-    EXPECT_EQ(lines[1], "Event: Орк (Orc) killed Медведь (Bear)");
-    EXPECT_EQ(lines[2], "Event: Battle is over. The winner is: Орк (Orc)");
+    EXPECT_EQ(lines[0], "Battle started with attack range: " + std::to_string(attackRange));
+    EXPECT_EQ(lines[1], "Орк (Orc) killed Медведь (Bear)");
+    EXPECT_EQ(lines[2], "Battle is over. The winner is: Орк (Orc)");
+
+    std::remove(logFile.c_str());
 }

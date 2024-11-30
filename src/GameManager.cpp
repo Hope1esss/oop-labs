@@ -18,11 +18,32 @@ void GameManager::addNPC(NPC *npc)
     npcs.push_back(npc);
 }
 
+void GameManager::removeNPCByIndex(size_t index)
+{
+    if (index < npcs.size())
+    {
+        removeNPC(npcs[index], npcs);
+    }
+    else
+    {
+        std::cerr << "Invalid index: " << index << std::endl;
+    }
+}
+
 void GameManager::addObserver(Observer *observer)
 {
     observers.push_back(observer);
 }
 
+void GameManager::removeObserver(Observer *observer)
+{
+    auto it = std::find(observers.begin(), observers.end(), observer);
+    if (it != observers.end())
+    {
+        delete *it;
+        observers.erase(it);
+    }
+}
 void GameManager::removeNPC(NPC *npc, std::vector<NPC *> &npcs)
 {
     auto it = std::find(npcs.begin(), npcs.end(), npc);
@@ -44,9 +65,17 @@ void GameManager::clearNPCs()
 }
 void GameManager::printNPCList() const
 {
-    for (const auto &npc : npcs)
+    if (npcs.empty())
     {
-        npc->printInfo();
+        std::cout << "NPC List is empty" << std::endl;
+    }
+    else
+    {
+        std::cout << "NPC List:" << std::endl;
+        for (const auto &npc : npcs)
+        {
+            npc->printInfo();
+        }
     }
 }
 
@@ -55,8 +84,7 @@ void GameManager::saveNPCsToFile(const std::string &filename) const
     std::ofstream outputFile(filename);
     if (!outputFile)
     {
-        std::cerr << "Error while opening file to save NPCs: " << filename << std::endl;
-        return;
+        throw OpeningFileException();
     }
 
     for (const auto &npc : npcs)
@@ -76,8 +104,7 @@ void GameManager::loadNPCsFromFile(const std::string &filename)
     std::ifstream inputFile(filename);
     if (!inputFile)
     {
-        std::cerr << "Error while opening file to load NPCs: " << filename << std::endl;
-        return;
+        throw OpeningFileException();
     }
 
     int x, y;
@@ -95,7 +122,6 @@ void GameManager::loadNPCsFromFile(const std::string &filename)
             std::cerr << "Error creating NPC: (" << name << ", " << type << ", " << x << ", " << y << ")" << std::endl;
         }
     }
-
     inputFile.close();
     std::cout << "NPCs loaded from file: " << filename << std::endl;
 }
@@ -110,9 +136,10 @@ void GameManager::startBattle(double attackRange)
         bool anyBattleOccurred = false;
 
         std::vector<NPC *> toRemove;
-
-        std::shuffle(npcs.begin(), npcs.end(), std::default_random_engine(std::time(nullptr)));
-
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::shuffle(npcs.begin(), npcs.end(), gen);
+        
         for (size_t i = 0; i < npcs.size(); i += 2)
         {
             if (i + 1 < npcs.size())
@@ -137,11 +164,15 @@ void GameManager::startBattle(double attackRange)
 
         if (!anyBattleOccurred)
         {
-            AFKBattleCounter;
-            if (AFKBattleCounter > 3)
+            AFKBattleCounter++;
+            if (AFKBattleCounter > 50)
             {
                 break;
             }
+        }
+        else
+        {
+            AFKBattleCounter = 0;
         }
     }
 

@@ -24,7 +24,7 @@ public:
     {
         if (outputFile.is_open())
         {
-            outputFile << "Event: " << event << std::endl;
+            outputFile << event << std::endl;
         }
     }
 

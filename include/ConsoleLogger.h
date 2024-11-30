@@ -6,6 +6,6 @@ class ConsoleLogger : public Observer
 public:
     void onEvent(const std::string &event) override
     {
-        std::cout << "Event: " << event << std::endl;
+        std::cout << event << std::endl;
     }
 };

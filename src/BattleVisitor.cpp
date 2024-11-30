@@ -33,10 +33,6 @@ void BattleVisitor::visit(Orc *orc)
         notify(orc->getName() + " (Orc) killed " + attacker->getName() + " (Bear)", observers);
         toRemove.push_back(attacker);
     }
-    else if (attacker->getType() == "Squirrel")
-    {
-        notify(orc->getName() + " (Orc) avoids combat", observers);
-    }
 }
 
 void BattleVisitor::visit(Squirrel *squirrel)
@@ -48,10 +44,6 @@ void BattleVisitor::visit(Squirrel *squirrel)
     {
         notify(attacker->getName() + " (Bear) killed " + squirrel->getName() + " (Squirrel)", observers);
         toRemove.push_back(squirrel);
-    }
-    else if ((attacker->getType() == "Orc") || (attacker->getType() == "Squirrel"))
-    {
-        notify(squirrel->getName() + " (Squirrel) avoids combat", observers);
     }
 }
 
@@ -68,9 +60,5 @@ void BattleVisitor::visit(Bear *bear)
     {
         notify(bear->getName() + " (Bear) killed " + attacker->getName() + " (Squirrel)", observers);
         toRemove.push_back(attacker);
-    }
-    else if (attacker->getType() == "Bear")
-    {
-        notify(bear->getName() + " (Bear) avoids combat", observers);
     }
 }
