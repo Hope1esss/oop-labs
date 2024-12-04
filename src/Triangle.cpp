@@ -1,5 +1,16 @@
 #include "../include/Triangle.h"
 #include <cmath>
+bool Triangle::isValid() const
+{
+    double side1 = std::sqrt(std::pow(points[1].x - points[0].x, 2) + std::pow(points[1].y - points[0].y, 2));
+    double side2 = std::sqrt(std::pow(points[2].x - points[1].x, 2) + std::pow(points[2].y - points[1].y, 2));
+    double side3 = std::sqrt(std::pow(points[2].x - points[0].x, 2) + std::pow(points[2].y - points[0].y, 2));
+    if (side1 + side2 > side3 && side1 + side3 > side2 && side2 + side3 > side1)
+    {
+        return true;
+    }
+    throw InvalidTriangleException();
+}
 
 Triangle::Triangle(const Point points[3])
 {
@@ -7,32 +18,49 @@ Triangle::Triangle(const Point points[3])
     {
         this->points[i] = points[i];
     }
+    isValid();
+}
 
-    isValidTriangle();
+Triangle::operator double() const
+{
+    double area = std::abs(points[0].x * (points[1].y - points[2].y) + points[1].x * (points[2].y - points[0].y) + points[2].x * (points[0].y - points[1].y)) / 2.0;
+
+    return area;
+}
+
+Point Triangle::geometricalCenter() const
+{
+    return Point((points[0].x + points[1].x + points[2].x) / 3.0, (points[0].y + points[1].y + points[2].y) / 3.0);
 }
 
 Triangle &Triangle::operator=(const Triangle &other)
 {
-    if (this != &other)
+    if (this == &other)
+    {
+        return *this;
+    }
+    else
     {
         for (int i = 0; i < 3; i++)
         {
             points[i] = other.points[i];
         }
     }
-    return *this;
 }
 
-Triangle &Triangle::operator=(Triangle &&other) noexcept
+Triangle &Triangle::operator=(const Triangle &&other) noexcept
 {
-    if (this != &other)
+    if (this == &other)
+    {
+        return *this;
+    }
+    else
     {
         for (int i = 0; i < 3; i++)
         {
             points[i] = std::move(other.points[i]);
         }
     }
-    return *this;
 }
 
 bool Triangle::operator==(const Figure &other) const
@@ -42,76 +70,52 @@ bool Triangle::operator==(const Figure &other) const
     {
         return false;
     }
-
     for (int i = 0; i < 3; i++)
     {
-        if (points[i].x != otherTriangle->points[i].x && points[i].y != otherTriangle->points[i].y)
+        if (points[i].x != otherTriangle->points[i].x || points[i].y != otherTriangle->points[i].y)
         {
             return false;
         }
     }
-
     return true;
 }
 
-Triangle::operator double() const
+void Triangle::printInfo() const
 {
-    double area = 0.5 * std::abs(points[0].x * (points[1].y - points[2].y) + points[1].x * (points[2].y - points[0].y) + points[2].x * (points[0].y - points[1].y));
-
-    return area;
-}
-
-Point Triangle::getGeometricalCenter() const
-{
-    Point center;
-    center.x = (points[0].x + points[1].x + points[2].x) / 3;
-    center.y = (points[0].y + points[1].y + points[2].y) / 3;
-    return center;
-}
-
-void Triangle::getPointsData() const
-{
-    std::cout << *this << std::endl;
-}
-
-bool Triangle::isValidTriangle() const
-{
-    double side1 = std::sqrt(std::pow(points[1].x - points[0].x, 2) + std::pow(points[1].y - points[0].y, 2));
-    double side2 = std::sqrt(std::pow(points[2].x - points[1].x, 2) + std::pow(points[2].y - points[1].y, 2));
-    double side3 = std::sqrt(std::pow(points[2].x - points[0].x, 2) + std::pow(points[2].y - points[0].y, 2));
-    if (side1 + side2 > side3 && side1 + side3 > side2 && side2 + side3 > side1)
-    {
-        return true;
-    }
-    throw TriangleValidException();
+    std::cout << "Type: Triangle, Points: (" << points[0] << ", " << points[1] << ", " << points[2] << ")" << std::endl;
 }
 
 std::istream &operator>>(std::istream &is, Triangle &triangle)
 {
-    Point points[3];
+    Point tempPoints[3];
     for (int i = 0; i < 3; i++)
     {
-        is >> points[i];
+        is >> tempPoints[i];
     }
 
     if (is.fail())
     {
-        throw TrianglePointsException();
+        throw TrianglePointsCountException();
+    }
+    else
+    {
+        return is;
     }
 
     for (int i = 0; i < 3; i++)
     {
-        triangle.points[i] = points[i];
+        triangle.points[i] = tempPoints[i];
     }
+
     return is;
 }
 
 std::ostream &operator<<(std::ostream &os, const Triangle &triangle)
 {
     os << "Triangle points: ";
-    for (int i = 0; i < 3; i++)
+    for (const auto &point : triangle.points)
     {
-        os << "(" << triangle.points[i].x << ", " << triangle.points[i].y << ") ";
+        os << point << " ";
     }
     return os;
 }

@@ -1,35 +1,37 @@
-#include "../include/Figure.h"
+#pragma once
+#include "Figure.h"
 
 class Hexagon : public Figure
 {
 public:
     Hexagon() = default;
-    Hexagon(const Point points[6]);
+    Hexagon(const Point points[3]);
 
-    Hexagon &operator=(const Hexagon &other);
-    Hexagon &operator=(Hexagon &&other) noexcept;
-
-    bool operator==(const Figure &other) const override;
-    void getPointsData() const override;
-    Point getGeometricalCenter() const override;
     operator double() const override;
-    bool isValidHexagon() const;
+    Point geometricalCenter() const override;
+    
+    Hexagon &operator=(const Hexagon &other);
+    Hexagon &operator=(const Hexagon &&other) noexcept;
+    bool operator==(const Figure &other) const override;
 
-    friend std::istream &operator>>(std::istream &is, Hexagon &Hexagon);    
+    bool isValid() const;
+    void printInfo() const override;
+
+    friend std::istream &operator>>(std::istream &is, Hexagon &Hexagon);
     friend std::ostream &operator<<(std::ostream &os, const Hexagon &Hexagon);
 
 private:
     Point points[6];
 };
 
-class HexagonPointsException : public std::invalid_argument
+class HexagonPointsCountException : public std::invalid_argument
 {
 public:
-HexagonPointsException() : std::invalid_argument("Invalid numbers of points for hexagon. It should be 6 points") {}
+    HexagonPointsCountException() : std::invalid_argument("Hexagon must have 6 points") {}
 };
 
-class HexagonValidException : public std::invalid_argument
+class InvalidHexagonException : public std::invalid_argument
 {
 public:
-HexagonValidException() : std::invalid_argument("Points can't form valid hexagon") {}
+    InvalidHexagonException() : std::invalid_argument("Invalid Hexagon") {}
 };

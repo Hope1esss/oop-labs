@@ -24,7 +24,7 @@ TEST(TriangleTest, GeometricalCenterTrue)
     Triangle triangle(points);
     Point expectedPoint = {1.66667, 0.333333};
 
-    Point realPoint = triangle.getGeometricalCenter();
+    Point realPoint = triangle.geometricalCenter();
 
     EXPECT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
@@ -35,7 +35,7 @@ TEST(TriangleTest, GeometricalCenterFalse)
     Triangle triangle(points);
     Point expectedPoint = {0, 0};
 
-    Point realPoint = triangle.getGeometricalCenter();
+    Point realPoint = triangle.geometricalCenter();
 
     EXPECT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
@@ -60,7 +60,7 @@ TEST(HexagonTest, GeometricalCenterTrue)
     Hexagon hexagon(points);
     Point expectedPoint = {0.833333, 1.44333};
 
-    Point realPoint = hexagon.getGeometricalCenter();
+    Point realPoint = hexagon.geometricalCenter();
 
     EXPECT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
@@ -71,7 +71,7 @@ TEST(HexagonTest, GeometricalCenterFalse)
     Hexagon hexagon(points);
     Point expectedPoint = {0, 0};
 
-    Point realPoint = hexagon.getGeometricalCenter();
+    Point realPoint = hexagon.geometricalCenter();
 
     EXPECT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
@@ -97,7 +97,7 @@ TEST(OctagonTest, GeometricalCenterTrue)
     Octagon octagon(points);
     Point expectedPoint = {1.06694, 1.06694};
 
-    Point realPoint = octagon.getGeometricalCenter();
+    Point realPoint = octagon.geometricalCenter();
 
     EXPECT_TRUE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 
@@ -109,7 +109,7 @@ TEST(OctagonTest, GeometricalCenterFalse)
     Octagon octagon(points);
     Point expectedPoint = {0, 0};
 
-    Point realPoint = octagon.getGeometricalCenter();
+    Point realPoint = octagon.geometricalCenter();
 
     EXPECT_FALSE(std::abs(expectedPoint.x - realPoint.x) < 1e-3 && std::abs(expectedPoint.y - realPoint.y) < 1e-3);
 }
