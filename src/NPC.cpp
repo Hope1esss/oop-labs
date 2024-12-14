@@ -1,6 +1,6 @@
 #include "../include/NPC.h"
 
-NPC::NPC(int x, int y, const std::string &name, const std::string &type) : x(x), y(y), name(name), type(type) {}
+NPC::NPC(int x, int y, const std::string &name, const std::string &type, int moveDistance, int killDistance) : x(x), y(y), name(name), type(type), moveDistance(moveDistance), killDistance(killDistance) {}
 
 NPC::~NPC() = default;
 
@@ -17,6 +17,22 @@ std::string NPC::getType() const
 std::pair<int, int> NPC::getPosition() const
 {
     return {x, y};
+}
+
+int NPC::getMoveDistance() const
+{
+    return moveDistance;
+}
+
+int NPC::getKillDistance() const
+{
+    return killDistance;
+}
+
+void NPC::move(int dx, int dy)
+{
+    x += dx;
+    y += dy;
 }
 
 double NPC::distanceTo(std::shared_ptr<NPC> other) const

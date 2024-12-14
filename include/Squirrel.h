@@ -5,7 +5,7 @@
 class Squirrel : public NPC, public std::enable_shared_from_this<Squirrel>
 {
 public:
-    Squirrel(int x, int y, const std::string &name) : NPC(x, y, name, "Squirrel") {}
+    Squirrel(int x, int y, const std::string &name) : NPC(x, y, name, "Squirrel", 5, 5) {}
     void accept(std::shared_ptr<Visitor> visitor) override
     {
         visitor->visit(shared_from_this());
