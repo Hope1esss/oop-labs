@@ -14,8 +14,9 @@ protected:
     std::string type;
     int moveDistance;
     int killDistance;
+    bool alive;
 public:
-    NPC(int x, int y, const std::string &name, const std::string &type, int moveDistance, int killDistance);
+    NPC(int x, int y, const std::string &name, const std::string &type, int moveDistance, int killDistance, bool alive);
     virtual ~NPC();
 
     std::string getName() const;
@@ -23,6 +24,9 @@ public:
     std::pair<int, int> getPosition() const;
     int getMoveDistance() const;
     int getKillDistance() const;
+
+    bool isAlive() const;
+    void kill();
 
     virtual void move(int dx, int dy);
 

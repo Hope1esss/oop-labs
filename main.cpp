@@ -19,7 +19,8 @@ void showMenu()
     std::cout << "8. Print NPC List" << std::endl;
     std::cout << "9. Enter NPC attack range" << std::endl;
     std::cout << "10. Start Battle" << std::endl;
-    std::cout << "11. Exit" << std::endl;
+    std::cout << "11. Start Async Battle" << std::endl;
+    std::cout << "12. Exit" << std::endl;
 }
 
 std::shared_ptr<NPC> addNPCManually()
@@ -128,11 +129,11 @@ int main()
 
     auto consoleLogger = std::make_shared<ConsoleLogger>();
     gameManager.addObserver(consoleLogger);
-    
+
     int choise = 0;
     double attackRange = 0.0;
 
-    while (choise != 11)
+    while (choise != 12)
     {
         showMenu();
         if (!(std::cin >> choise))
@@ -246,7 +247,19 @@ int main()
 
             case 11:
             {
-                std::cout << "Exiting the program..." << std::endl;
+                gameManager.clearNPCs();
+                std::vector<std::shared_ptr<NPC>> npcs = addRandomNPCs(50);
+                for (auto npc : npcs)
+                {
+                    gameManager.addNPC(npc);
+                }
+                std::cout << "Starting async battle..." << std::endl;
+                gameManager.startAsyncBattle();
+                break;
+            }
+            case 12:
+            {
+                std::cout << "Exiting program..." << std::endl;
                 break;
             }
 
