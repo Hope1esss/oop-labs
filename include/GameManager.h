@@ -41,8 +41,8 @@ public:
     
     void moveNPCs(std::vector<std::shared_ptr<NPC>> &npcs, std::queue<FightTask> &fightQueue, std::mutex &mutex);
     void fightNPCs(std::vector<std::shared_ptr<NPC>> &npcs, std::queue<FightTask> &fightQueue, std::vector <std::shared_ptr<Observer>> &observers, std::mutex &mutex);
-    void printMap(const std::vector<std::shared_ptr<NPC>> npcs, std::mutex &mutex);
-    void startAsyncBattle();
+    void printMap(std::vector<std::shared_ptr<NPC>> &npcs, std::mutex &mutex);
+    void startAsyncBattle(int time);
 
     void stopThreads();
 

@@ -42,8 +42,8 @@ TEST(NPCTests, NPCSaveAndLoadTest)
 
 TEST(BattleTests, OrcAndOrcBattleTest)
 {
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Орк1", "Orc");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(1, 1, "Орк2", "Orc");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Орк1", "Orc");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(1, 1, "Орк2", "Orc");
 
     GameManager gameManager;
     gameManager.addNPC(npc1);
@@ -61,8 +61,8 @@ TEST(BattleTests, OrcAndOrcBattleTest)
 
 TEST(BattleTests, OrcAndBearBattleTest)
 {
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Орк", "Orc");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(1, 1, "Медведь", "Bear");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Орк", "Orc");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(1, 1, "Медведь", "Bear");
 
     GameManager gameManager;
     gameManager.addNPC(npc1);
@@ -82,8 +82,8 @@ TEST(BattleTests, OrcAndBearBattleTest)
 
 TEST(BattleTests, OrcAndSquirrelBattleTest)
 {
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Орк", "Orc");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(1, 1, "Белка", "Squirrel");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Орк", "Orc");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(1, 1, "Белка", "Squirrel");
 
     GameManager gameManager;
     gameManager.addNPC(npc1);
@@ -101,8 +101,8 @@ TEST(BattleTests, OrcAndSquirrelBattleTest)
 
 TEST(BattleTests, BearAndBearBattleTest)
 {
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Медведь1", "Bear");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(1, 1, "Медведь2", "Bear");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Медведь1", "Bear");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(1, 1, "Медведь2", "Bear");
 
     GameManager gameManager;
     gameManager.addNPC(npc1);
@@ -120,8 +120,8 @@ TEST(BattleTests, BearAndBearBattleTest)
 
 TEST(BattleTests, BearAndSquirrelBattleTest)
 {
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Медведь", "Bear");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(1, 1, "Белка", "Squirrel");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Медведь", "Bear");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(1, 1, "Белка", "Squirrel");
 
     GameManager gameManager;
     gameManager.addNPC(npc1);
@@ -141,8 +141,8 @@ TEST(BattleTests, BearAndSquirrelBattleTest)
 
 TEST(BattleTests, SquirrelAndSquirrelBattleTest)
 {
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Белка1", "Squirrel");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(1, 1, "Белка2", "Squirrel");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Белка1", "Squirrel");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(1, 1, "Белка2", "Squirrel");
 
     GameManager gameManager;
     gameManager.addNPC(npc1);
@@ -171,8 +171,8 @@ TEST(BattleTests, SquirrelAndSquirrelBattleTest)
 
 TEST(BattleTests, BattleWithSmallAttackRangeTest)
 {
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Орк1", "Orc");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(50, 50, "Орк2", "Orc");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Орк1", "Orc");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(50, 50, "Орк2", "Orc");
 
     GameManager gameManager;
     gameManager.addNPC(npc1);
@@ -206,8 +206,8 @@ TEST(LoggerTests, LogToFileTest)
 
     GameManager gameManager;
 
-    std::shared_ptr<NPC>npc1 = NPCFactory::createNPC(0, 0, "Орк", "Orc");
-    std::shared_ptr<NPC>npc2 = NPCFactory::createNPC(50, 50, "Медведь", "Bear");
+    std::shared_ptr<NPC> npc1 = NPCFactory::createNPC(0, 0, "Орк", "Orc");
+    std::shared_ptr<NPC> npc2 = NPCFactory::createNPC(50, 50, "Медведь", "Bear");
 
     gameManager.addNPC(npc1);
     gameManager.addNPC(npc2);
@@ -227,6 +227,71 @@ TEST(LoggerTests, LogToFileTest)
     EXPECT_EQ(lines[0], "Battle started with attack range: " + std::to_string(attackRange));
     EXPECT_EQ(lines[1], "Орк (Orc) killed Медведь (Bear)");
     EXPECT_EQ(lines[2], "Battle is over. The winner is: Орк (Orc)");
+
+    std::remove(logFile.c_str());
+}
+
+TEST(AsyncBattleTests, NPCMovementTest)
+{
+    GameManager gameManager;
+
+    auto npc1 = NPCFactory::createNPC(50, 50, "Орк", "Orc");
+
+    gameManager.addNPC(npc1);
+
+    auto posX = npc1->getPosition().first, posY = npc1->getPosition().second;
+
+
+    gameManager.startAsyncBattle(1);
+
+    auto currentPosX = npc1->getPosition().first, currentPosY = npc1->getPosition().second;
+
+    EXPECT_NE(posX, currentPosX);
+    EXPECT_NE(posY, currentPosY);
+}
+
+TEST(AsyncBattleTests, NoBattleOnBigDistanceTest)
+{
+    GameManager gameManager;
+
+    auto npc1 = NPCFactory::createNPC(0, 0, "Орк", "Orc");
+    auto npc2 = NPCFactory::createNPC(500, 500, "Медведь", "Bear");
+
+    gameManager.addNPC(npc1);
+    gameManager.addNPC(npc2);
+
+    gameManager.startAsyncBattle(1);
+
+    std::vector<std::shared_ptr<NPC>> npcs;
+    gameManager.getNPCs(npcs);
+
+    EXPECT_EQ(npcs.size(), 2);
+}
+
+TEST(AsyncBattleTests, AsyncBattleLogToFileTest)
+{
+    GameManager gameManager;
+
+    auto npc1 = NPCFactory::createNPC(5, 5, "Орк", "Orc");
+    auto npc2 = NPCFactory::createNPC(10, 10, "Медведь", "Bear");
+
+    gameManager.addNPC(npc1);
+    gameManager.addNPC(npc2);
+
+    std::string logFile = "async_test.log";
+
+    auto fileLogger = std::make_shared<FileLogger>(logFile);
+    gameManager.addObserver(fileLogger);
+
+    double attackRange = 15.0;
+
+    gameManager.startAsyncBattle(1);
+
+    std::vector<std::string> lines;
+    fileLogger->getLogs(lines, logFile);
+
+    EXPECT_GE(lines.size(), 2);
+    EXPECT_EQ(lines[0], "Battle started!");
 
     std::remove(logFile.c_str());
 }

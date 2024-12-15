@@ -247,14 +247,15 @@ int main()
 
             case 11:
             {
-                gameManager.clearNPCs();
+                gameManager.removeObserver(consoleLogger);
                 std::vector<std::shared_ptr<NPC>> npcs = addRandomNPCs(50);
                 for (auto npc : npcs)
                 {
                     gameManager.addNPC(npc);
                 }
                 std::cout << "Starting async battle..." << std::endl;
-                gameManager.startAsyncBattle();
+                gameManager.startAsyncBattle(30);
+                gameManager.addObserver(consoleLogger);
                 break;
             }
             case 12:

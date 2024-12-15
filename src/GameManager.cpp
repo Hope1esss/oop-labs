@@ -4,7 +4,6 @@
 #include <random>
 #include <ctime>
 #include <vector>
-#include "../include/GameMap.h"
 GameManager::~GameManager()
 {
     npcs.clear();
@@ -63,7 +62,8 @@ void GameManager::removeDeadNPCs(std::vector<std::shared_ptr<NPC>> &npcs, std::m
         {
             removeNPCAsync(*it, npcs, mutex);
             it = npcs.begin();
-        } else
+        }
+        else
         {
             ++it;
         }
@@ -293,50 +293,46 @@ void GameManager::fightNPCs(std::vector<std::shared_ptr<NPC>> &npcs, std::queue<
             }
 
             std::shared_ptr<AsyncBattleVisitor> visitor = std::make_shared<AsyncBattleVisitor>(task.attacker, task.defender, observers);
-            
+
             task.defender->accept(visitor);
         }
     }
 }
 
-void GameManager::printMap(std::vector<std::shared_ptr<NPC>> npcs, std::mutex &mutex)
+void GameManager::printMap(std::vector<std::shared_ptr<NPC>> &npcs, std::mutex &mutex)
 {
-    // Создаем окно SFML
-    sf::RenderWindow window(sf::VideoMode(500, 500), "Balagur Fate 3");
+    const int width = 50;
+    const int height = 50;
 
-    // Создаем объект GameMap для отрисовки карты
-    GameMap gameMap(500, 500, window);
+    std::vector<std::vector<char>> map(height, std::vector<char>(width, '.'));
 
-    // Основной цикл отрисовки
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
+    while (!stopThreadsFlag) {
+        for (auto& row : map) {
+            std::fill(row.begin(), row.end(), '.');
+        }
+
         {
-            // Закрытие окна при клике на крестик
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
+            std::lock_guard<std::mutex> lock(mutex);
+            for (const auto& npc : npcs) {
+                int x = npc->getPosition().first / 10;
+                int y = npc->getPosition().second / 10;
+
+                if (x >= 0 && x < width && y >= 0 && y < height) {
+                    map[y][x] = 'X';
+                }
             }
         }
 
-        // Очистка окна перед новой отрисовкой
-        window.clear();
+        system("clear");
 
-        // Мьютекс для синхронизации доступа к данным
-        std::lock_guard<std::mutex> lock(mutex);
+        for (const auto& row : map) {
+            for (const char cell : row) {
+                std::cout << cell << ' ';
+            }
+            std::cout << std::endl;
+        }
 
-        // Обновляем расположение NPC на карте
-        gameMap.placeNPCs(npcs);
-
-        // Рисуем обновленную карту
-        gameMap.drawMap();
-
-        // Отображаем все на экране
-        window.display();
-
-        // Устанавливаем задержку, чтобы не обновлять экран слишком быстро
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));  // Можно увеличить для более плавного обновления
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
@@ -346,7 +342,7 @@ void GameManager::stopThreads()
     stopThreadsFlag = true;
 }
 
-void GameManager::startAsyncBattle()
+void GameManager::startAsyncBattle(int time=30)
 {
     std::thread moveThread([this]
                            { moveNPCs(npcs, fightQueue, mutex); });
@@ -354,9 +350,9 @@ void GameManager::startAsyncBattle()
                             { fightNPCs(npcs, fightQueue, observers, mutex); });
     std::thread mapThread([this]
                           { printMap(npcs, mutex); });
-    std::cout << "Battle Started!" << std::endl;
+    BattleVisitor::notify("Battle started!", observers);
 
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    std::this_thread::sleep_for(std::chrono::seconds(time));
 
     stopThreads();
 
@@ -364,10 +360,10 @@ void GameManager::startAsyncBattle()
     fightThread.join();
     mapThread.join();
 
-    std::cout << "Battle Finished!" << std::endl;
+    BattleVisitor::notify("Battle is over!", observers);
 
     GameManager::removeDeadNPCs(npcs, mutex);
-    
+
     std::cout << "Remaining NPCs:" << std::endl;
 
     printNPCList();
