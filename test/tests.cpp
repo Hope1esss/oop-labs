@@ -242,12 +242,12 @@ TEST(AsyncBattleTests, NPCMovementTest)
     auto posX = npc1->getPosition().first, posY = npc1->getPosition().second;
 
 
-    gameManager.startAsyncBattle(1);
+    gameManager.startAsyncBattle(2);
 
     auto currentPosX = npc1->getPosition().first, currentPosY = npc1->getPosition().second;
 
-    EXPECT_NE(posX, currentPosX);
-    EXPECT_NE(posY, currentPosY);
+    EXPECT_TRUE(posX != currentPosX);
+    EXPECT_TRUE(posY != currentPosY);
 }
 
 TEST(AsyncBattleTests, NoBattleOnBigDistanceTest)
@@ -290,7 +290,7 @@ TEST(AsyncBattleTests, AsyncBattleLogToFileTest)
     std::vector<std::string> lines;
     fileLogger->getLogs(lines, logFile);
 
-    EXPECT_GE(lines.size(), 2);
+    EXPECT_TRUE(lines.size() > 2);
     EXPECT_EQ(lines[0], "Battle started!");
 
     std::remove(logFile.c_str());

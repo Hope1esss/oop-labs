@@ -299,25 +299,51 @@ void GameManager::fightNPCs(std::vector<std::shared_ptr<NPC>> &npcs, std::queue<
     }
 }
 
-void GameManager::printMap(std::vector<std::shared_ptr<NPC>> &npcs, std::mutex &mutex)
+void GameManager::printMap(std::vector<std::shared_ptr<NPC>> &npcs, std::mutex &mutex, int duration)
 {
     const int width = 50;
     const int height = 50;
 
+     BattleVisitor::notify("Battle started!", observers);
+
     std::vector<std::vector<char>> map(height, std::vector<char>(width, '.'));
 
-    while (!stopThreadsFlag) {
-        for (auto& row : map) {
+    std::thread moveThread([&npcs, &mutex, this]
+                           { moveNPCs(npcs, fightQueue, mutex); });
+    std::thread fightThread([&npcs, &mutex, this]
+                            { fightNPCs(npcs, fightQueue, observers, mutex); });
+
+    auto startTime = std::chrono::steady_clock::now();
+
+    while (true)
+    {
+        // Вычисляем прошедшее время
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(
+                               std::chrono::steady_clock::now() - startTime)
+                               .count();
+
+        // Завершаем битву по истечении времени
+        if (elapsedTime >= duration)
+        {
+            stopThreadsFlag = true;
+            break;
+        }
+
+        // Обновляем карту
+        for (auto &row : map)
+        {
             std::fill(row.begin(), row.end(), '.');
         }
 
         {
             std::lock_guard<std::mutex> lock(mutex);
-            for (const auto& npc : npcs) {
+            for (const auto &npc : npcs)
+            {
                 int x = npc->getPosition().first / 10;
                 int y = npc->getPosition().second / 10;
 
-                if (x >= 0 && x < width && y >= 0 && y < height) {
+                if (x >= 0 && x < width && y >= 0 && y < height)
+                {
                     map[y][x] = 'X';
                 }
             }
@@ -325,47 +351,32 @@ void GameManager::printMap(std::vector<std::shared_ptr<NPC>> &npcs, std::mutex &
 
         system("clear");
 
-        for (const auto& row : map) {
-            for (const char cell : row) {
+        for (const auto &row : map)
+        {
+            for (const char cell : row)
+            {
                 std::cout << cell << ' ';
             }
             std::cout << std::endl;
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-}
-
-
-void GameManager::stopThreads()
-{
-    stopThreadsFlag = true;
-}
-
-void GameManager::startAsyncBattle(int time=30)
-{
-    std::thread moveThread([this]
-                           { moveNPCs(npcs, fightQueue, mutex); });
-    std::thread fightThread([this]
-                            { fightNPCs(npcs, fightQueue, observers, mutex); });
-    std::thread mapThread([this]
-                          { printMap(npcs, mutex); });
-    BattleVisitor::notify("Battle started!", observers);
-
-    std::this_thread::sleep_for(std::chrono::seconds(time));
-
-    stopThreads();
 
     moveThread.join();
     fightThread.join();
-    mapThread.join();
 
     BattleVisitor::notify("Battle is over!", observers);
-
-    GameManager::removeDeadNPCs(npcs, mutex);
-
-    std::cout << "Remaining NPCs:" << std::endl;
-
+     std::cout << "Remaining NPCs:" << std::endl;
     printNPCList();
+
     stopThreadsFlag = false;
+    
+    GameManager::removeDeadNPCs(npcs, mutex);
+}
+
+
+void GameManager::startAsyncBattle(int time = 30)
+{
+    printMap(npcs, mutex, time);
 }
